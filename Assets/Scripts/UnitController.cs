@@ -4,105 +4,23 @@ using UnityEngine;
 
 public enum States
 {
-    Idle,
-    Moving,
-    Attacking,
-    Disabled
+    Idle = 0,
+    Moving = 1,
+    Attacking = 2,
+    Disabled = 3
 }
 
-public class UnitController : MonoBehaviour
+public class UnitController : TileObject
 {
-    private States _state;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    //TODO switch to event and Invoke based system
-    private void SwitchState(States newState)
-    {
-
-        CustomExit(_state);
-        CustomAwake(newState);
-        _state = newState;
-    }
+    [SerializeField] protected float movementSpeed = 1;
     
-    private void CustomAwake(States state)
+
+    protected void MoveToTile(Tile tile, float worldMovementStep)
     {
-        switch (state)
-        {
-            case(States.Idle):
-                Idle_Awake();
-                break;
-            case(States.Moving):
-                Moving_Awake();
-                break;                
-        }        
+        // TODO is this optimal?
+        transform.position = Vector3.MoveTowards(transform.position, tile.transform.position, movementSpeed * worldMovementStep * Time.deltaTime);
     }
 
-    private void CustomUpdate(States state)
-    {
-        switch (state)
-        {
-            case(States.Idle):
-                Idle_Update();
-                break;
-            case(States.Moving):
-                Moving_Update();
-                break;    
-        }
-    }
-    
-    private void CustomExit(States state)
-    {
-        switch (state)
-        {
-            case(States.Idle):
-                Idle_Exit();
-                break;
-            case(States.Moving):
-                Idle_Exit();
-                break;    
-        }
-    }
-    
-    private void Idle_Awake()
-    {
-        
-    }
-
-    private void Idle_Update()
-    {
-        
-    }
-
-    private void Idle_Exit()
-    {
-        
-    }
-
-    private void Moving_Awake()
-    {
-        
-    }
-
-    private void Moving_Update()
-    {
-        
-    }
-
-    private void Moving_Exit()
-    {
-        
-        
-    }
 }
 
 
