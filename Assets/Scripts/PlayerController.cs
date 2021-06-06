@@ -62,12 +62,12 @@ public class PlayerController : UnitController
                 break;
             case 1: // MOVING
                 {
-                    if (moveTime >= 0f)
+                    // TODO change to constant
+                    if (moveTime >= 0.5 / movementSpeed)
                     {
-                        MoveToTile(_targetTile, worldMoveStep);
-                        moveTime -= Time.deltaTime;
+                        MoveToTile(_targetTile, worldMoveStep * 2);
                     }
-                    else
+                    else if(moveTime <= 0)
                     {
                         transform.position = _targetTile.transform.position;
                         _occupiedTile.ClearTileObject();
@@ -75,6 +75,8 @@ public class PlayerController : UnitController
                         _position = _occupiedTile.GetPosition();
                         _currentState = (int) States.Idle;
                     }
+                    
+                    moveTime -= Time.deltaTime;
                 }
                 break;
         }

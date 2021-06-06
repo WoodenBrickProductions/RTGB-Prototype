@@ -35,8 +35,13 @@ public class BoardController : MonoBehaviour
 
     public void InitializePosition(TileObject tileObject)
     {
-        Vector3 position = tileObject.transform.position;
-        tileObject.SetPosition(new Position((int) (position.x/worldTileSpacing),(int) (position.z/worldTileSpacing)));
+        Vector3 worldPosition = tileObject.transform.position;
+        Position position = new Position((int) (worldPosition.x / worldTileSpacing), (int) (worldPosition.z / worldTileSpacing));
+        tileObject.SetPosition(position);
+        tileObject.transform.position = new Vector3(position.x * worldTileSpacing, 0, position.y * worldTileSpacing);
+        Tile tile = GetTile(position);
+        tileObject.SetOccupiedTile(tile);
+        tile.SetTileObject(tileObject);
     }
 
     public Tile GetTile(Position position)

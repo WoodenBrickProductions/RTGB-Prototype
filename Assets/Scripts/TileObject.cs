@@ -7,7 +7,7 @@ public class TileObject : MonoBehaviour
     [SerializeField] protected bool staticObject;
     protected Tile _occupiedTile;
     protected Position _position;
-    [SerializeField] protected BoardController boardController;
+    protected BoardController boardController;
 
     
     // Start is called before the first frame update
@@ -15,7 +15,6 @@ public class TileObject : MonoBehaviour
     {
         boardController = BoardController._boardController;
         boardController.InitializePosition(this);
-        _occupiedTile = boardController.GetTile(_position);
     }
 
     public void SetPosition(Position position)
@@ -31,5 +30,10 @@ public class TileObject : MonoBehaviour
     public Tile GetOccupiedTile()
     {
         return _occupiedTile;
+    }
+
+    public void SetOccupiedTile(Tile tile)
+    {
+        _occupiedTile = tile;
     }
 }

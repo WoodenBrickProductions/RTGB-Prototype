@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-    private TileObject _occupiedTileObject;
+    [SerializeField] private TileObject _occupiedTileObject;
     private Position _position;
     
     public TileObject GetOccupiedTileObject()
