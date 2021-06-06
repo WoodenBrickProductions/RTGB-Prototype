@@ -14,7 +14,11 @@ public enum States
 public class UnitController : TileObject
 {
     [SerializeField] protected float movementSpeed = 1;
+    protected int _currentState = 0;
+    protected float worldMoveStep = 1;
+    protected Tile _targetTile;
 
+    
     protected void MoveToTile(Tile tile, float worldMovementStep)
     {
         // TODO is this optimal?

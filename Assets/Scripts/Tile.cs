@@ -16,7 +16,7 @@ public class Tile : MonoBehaviour
 
     public bool SetTileObject(TileObject occupiedObject)
     {
-        if (!staticTile)
+        if (!staticTile && _occupiedTileObject != occupiedObject)
         {
             _occupiedTileObject = occupiedObject;
             return true;

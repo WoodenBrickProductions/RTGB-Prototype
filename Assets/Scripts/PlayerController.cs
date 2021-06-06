@@ -8,23 +8,23 @@ using UnityEngine;
 
 public class PlayerController : UnitController
 {
-    private List<IState> _states;
-    private int _currentState;
-    private Tile _targetTile;
+    // private List<IState> _states;
     
-    private float moveTime;
-    private float worldMoveStep;
-
-    private bool StoppedMoving;
+    private float _moveTime;
+    private bool _stoppedMoving;
+    
+    [SerializeField] private float AttackCooldown = 1f;
+    private float _attacktime = 0;
+    
     
     // Start is called before the first frame update
     protected override void Start()
     {
         base.Start();
         staticObject = false;
-        _states = new List<IState>();
-        _states.Add(new IdleState());
-        _states.Add(new MovingState());
+        // _states = new List<IState>();
+        // _states.Add(new IdleState());
+        // _states.Add(new MovingState());
         worldMoveStep = boardController.GetWorldTileSpacing();
     }
 
@@ -33,63 +33,80 @@ public class PlayerController : UnitController
     {
         switch (_currentState)
         {
-            case 0:     // IDLE
-                KeyCode direction = GetInputDirection();
-                if (direction != 0)
-                {
-                    Position targetPosition = GetTargetPosition(direction);
-                    _targetTile = boardController.GetTile(targetPosition);
-                    if (_targetTile != null && !_targetTile.IsStaticTile())
-                    {
-                        TileObject occupiedTileObject = _targetTile.GetOccupiedTileObject();
-                        if (occupiedTileObject != null)
-                        {
-                            if (occupiedTileObject.IsStaticObject())
-                            {
-                                
-                            }
-                            else
-                            {
-                                // TODO Implement attacking
-                            }
-                        }
-                        else
-                        {
-                            _targetTile.SetTileObject(this);
-                            ChangeState(States.Moving);
-                            moveTime = 1 / movementSpeed;
-                        }
-                    }
-                }
+            case 0: // IDLE
+                IdleUpdate();
                 break;
             case 1: // MOVING
-                {
-                    // TODO change to constant
-                    if (moveTime >= 0.5 / movementSpeed)
-                    {
-                        MoveToTile(_targetTile, worldMoveStep * 2);
-                    } else if (!StoppedMoving)
-                    {
-                        StoppedMoving = true;
-                        transform.position = _targetTile.transform.position;
-                        _occupiedTile.ClearTileObject();
-                        _occupiedTile = _targetTile;
-                        _position = _occupiedTile.GetPosition();
-                    }
-                    
-                    if(moveTime <= 0)
-                    {
-                        ChangeState(States.Idle);
-                    }
-                    
-                    moveTime -= Time.deltaTime;
-                }
+                MovingUpdate();
+                break;
+            case 2: // ATTACKING
+                AttackingUpdate();
                 break;
         }
         
 
     }
 
+    private void IdleUpdate()
+    {
+        KeyCode direction = GetInputDirection();
+        if (direction != 0)
+        {
+            Position targetPosition = GetTargetPosition(direction);
+            _targetTile = boardController.GetTile(targetPosition);
+            if (_targetTile != null && !_targetTile.IsStaticTile())
+            {
+                TileObject occupiedTileObject = _targetTile.GetOccupiedTileObject();
+                if (occupiedTileObject != null)
+                {
+                    if (occupiedTileObject.IsStaticObject())
+                    {
+                                
+                    }
+                    else
+                    {
+                        // TODO Implement attacking
+                    }
+                }
+                else
+                {
+                    _targetTile.SetTileObject(this);
+                    ChangeState(States.Moving);
+                    _moveTime = 1.0f / movementSpeed;
+                }
+            }
+        }
+    }
+
+    private void MovingUpdate()
+    {
+        // TODO change to constant
+        if (_moveTime >= 0.5 / movementSpeed)
+        {
+            MoveToTile(_targetTile, worldMoveStep * 2);
+        } else if (!_stoppedMoving)
+        {
+            _stoppedMoving = true;
+            transform.position = _targetTile.transform.position;
+            _occupiedTile.ClearTileObject();
+            _occupiedTile = _targetTile;
+            _position = _occupiedTile.GetPosition();
+        }
+                    
+        if(_moveTime <= 0)
+        {
+            ChangeState(States.Idle);
+        }
+                    
+        _moveTime -= Time.deltaTime;
+    }
+
+    private void AttackingUpdate()
+    {
+        
+    }
+    
+    
     private Position GetTargetPosition(KeyCode keyCode)
     {
         if (keyCode == KeyCode.W)
@@ -151,27 +168,10 @@ public class PlayerController : UnitController
 
             case 1:
             {
-                StoppedMoving = false;
+                _stoppedMoving = false;
                 _currentState = 1;
             }
             break;
         }
     }
-    
-    
-    
-    // private bool MoveToTarget(Position position)
-    // {
-    //     _targetTile = boardController.GetTile(position);
-    //     if (_targetTile.GetOccupiedTileObject() == null)
-    //     {
-    //         _currentState = 
-    //     }
-    // }
-    
-    void Move(Vector3 targetLocation)
-    {
-
-    }
-
 }

@@ -42,12 +42,14 @@ public class BoardController : MonoBehaviour
         if (tile == null)
         {
             print("Can't place object " + tileObject + " : object outside tilemap");
+            Destroy(tileObject.gameObject);
             return;
         }
 
         if (tile.GetOccupiedTileObject() != null)
         {
             print("Can't place object " + tileObject + " : tile already occupied");
+            Destroy(tileObject.gameObject);
             return;
         }
         
@@ -60,6 +62,7 @@ public class BoardController : MonoBehaviour
         else
         {
             print("Can't place object " + tileObject + " : tile is static");
+            Destroy(tileObject.gameObject);
         }
 
     }
