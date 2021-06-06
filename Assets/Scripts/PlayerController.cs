@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Transactions;
@@ -9,14 +10,14 @@ using UnityEngine;
 public class PlayerController : UnitController
 {
     // private List<IState> _states;
-    
+
+    public static PlayerController _playerController;
     private float _moveTime;
     private bool _stoppedMoving;
     
     [SerializeField] private float AttackCooldown = 1f;
     private float _attacktime = 0;
-    
-    
+
     // Start is called before the first frame update
     protected override void Start()
     {

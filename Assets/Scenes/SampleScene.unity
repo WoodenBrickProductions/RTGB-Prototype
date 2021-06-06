@@ -1135,12 +1135,22 @@ PrefabInstance:
     - target: {fileID: 3146562368116733893, guid: 673637af6e8090943ae3e421a9024284,
         type: 3}
       propertyPath: xSize
-      value: 8
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3146562368116733893, guid: 673637af6e8090943ae3e421a9024284,
         type: 3}
       propertyPath: ySize
-      value: 8
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 3146562368116733893, guid: 673637af6e8090943ae3e421a9024284,
+        type: 3}
+      propertyPath: spawnRate
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3146562368116733893, guid: 673637af6e8090943ae3e421a9024284,
+        type: 3}
+      propertyPath: spawnScaling
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 3146562368116733894, guid: 673637af6e8090943ae3e421a9024284,
         type: 3}

@@ -2,12 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class BoardController : MonoBehaviour
 {
     private float worldTileSpacing;
     public static BoardController _boardController;
+    private float _perlinSeed;
     [SerializeField] private TileMap _tileMap; 
+    
     
     // Start is called before the first frame update
 
@@ -18,8 +21,9 @@ public class BoardController : MonoBehaviour
 
     void Start()
     {
+        _perlinSeed = Random.value * 1000;
         worldTileSpacing = _tileMap.GetWorldTileSpacing();
-        _tileMap.GenerateTileMap(Vector3.zero);
+        _tileMap.GenerateTileMap();
     }
 
     // Update is called once per frame
@@ -62,7 +66,11 @@ public class BoardController : MonoBehaviour
         else
         {
             print("Can't place object " + tileObject + " : tile is static");
-            Destroy(tileObject.gameObject);
+            position = _tileMap.GetValidTile();
+            tileObject.SetPosition(position);
+            tileObject.transform.position = new Vector3(position.x * worldTileSpacing, 0, position.y * worldTileSpacing);
+            tileObject.SetOccupiedTile(tile);
+                        
         }
 
     }
@@ -70,5 +78,10 @@ public class BoardController : MonoBehaviour
     public Tile GetTile(Position position)
     {
         return _tileMap.GetTile(position);
+    }
+
+    public float GetGenerationSeed()
+    {
+        return _perlinSeed;
     }
 }
