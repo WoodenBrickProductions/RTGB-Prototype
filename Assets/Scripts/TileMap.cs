@@ -22,7 +22,11 @@ public class TileMap : MonoBehaviour
         {
             for (int j = 0; j < ySize; j++)
             {
-                tileMatrix[i, j] = Instantiate(baseTile, center + new Vector3(i * worldSpacing, 0, j * worldSpacing), Quaternion.identity, transform);
+                tileMatrix[i, j] = Instantiate(
+                    baseTile,
+                    center + new Vector3(i * worldSpacing, 0, j * worldSpacing),
+                    Quaternion.identity,
+                    transform);
                 tileMatrix[i, j].SetPosition(new Position(i, j));
             }
         }

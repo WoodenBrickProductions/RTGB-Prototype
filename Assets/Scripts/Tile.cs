@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
     [SerializeField] private TileObject _occupiedTileObject;
+    [SerializeField] private bool staticTile = false;
     private Position _position;
     
     public TileObject GetOccupiedTileObject()
@@ -12,14 +14,25 @@ public class Tile : MonoBehaviour
         return _occupiedTileObject;
     }
 
-    public void SetTileObject(TileObject occupiedObject)
+    public bool SetTileObject(TileObject occupiedObject)
     {
-        _occupiedTileObject = occupiedObject;
+        if (!staticTile)
+        {
+            _occupiedTileObject = occupiedObject;
+            return true;
+        }
+
+        return false;
     }
 
     public void ClearTileObject()
     {
         _occupiedTileObject = null;
+    }
+
+    public bool IsStaticTile()
+    {
+        return staticTile;
     }
     
     public Position GetPosition()

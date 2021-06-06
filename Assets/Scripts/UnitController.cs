@@ -18,7 +18,15 @@ public class UnitController : TileObject
     protected void MoveToTile(Tile tile, float worldMovementStep)
     {
         // TODO is this optimal?
-        transform.position = Vector3.MoveTowards(transform.position, tile.transform.position, movementSpeed * worldMovementStep * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            tile.transform.position,
+            movementSpeed * worldMovementStep * Time.deltaTime);
+    }
+
+    public float GetMovementSpeed()
+    {
+        return movementSpeed;
     }
 }
 

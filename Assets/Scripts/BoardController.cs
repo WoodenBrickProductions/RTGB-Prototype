@@ -37,11 +37,31 @@ public class BoardController : MonoBehaviour
     {
         Vector3 worldPosition = tileObject.transform.position;
         Position position = new Position((int) (worldPosition.x / worldTileSpacing), (int) (worldPosition.z / worldTileSpacing));
-        tileObject.SetPosition(position);
-        tileObject.transform.position = new Vector3(position.x * worldTileSpacing, 0, position.y * worldTileSpacing);
         Tile tile = GetTile(position);
-        tileObject.SetOccupiedTile(tile);
-        tile.SetTileObject(tileObject);
+
+        if (tile == null)
+        {
+            print("Can't place object " + tileObject + " : object outside tilemap");
+            return;
+        }
+
+        if (tile.GetOccupiedTileObject() != null)
+        {
+            print("Can't place object " + tileObject + " : tile already occupied");
+            return;
+        }
+        
+        if (tile.SetTileObject(tileObject))
+        {
+            tileObject.SetPosition(position);
+            tileObject.transform.position = new Vector3(position.x * worldTileSpacing, 0, position.y * worldTileSpacing);
+            tileObject.SetOccupiedTile(tile);
+        }
+        else
+        {
+            print("Can't place object " + tileObject + " : tile is static");
+        }
+
     }
 
     public Tile GetTile(Position position)

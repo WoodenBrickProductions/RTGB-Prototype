@@ -14,6 +14,8 @@ public class PlayerController : UnitController
     
     private float moveTime;
     private float worldMoveStep;
+
+    private bool StoppedMoving;
     
     // Start is called before the first frame update
     protected override void Start()
@@ -37,7 +39,7 @@ public class PlayerController : UnitController
                 {
                     Position targetPosition = GetTargetPosition(direction);
                     _targetTile = boardController.GetTile(targetPosition);
-                    if (_targetTile != null)
+                    if (_targetTile != null && !_targetTile.IsStaticTile())
                     {
                         TileObject occupiedTileObject = _targetTile.GetOccupiedTileObject();
                         if (occupiedTileObject != null)
@@ -54,7 +56,7 @@ public class PlayerController : UnitController
                         else
                         {
                             _targetTile.SetTileObject(this);
-                            _currentState = (int) States.Moving;
+                            ChangeState(States.Moving);
                             moveTime = 1 / movementSpeed;
                         }
                     }
@@ -66,14 +68,18 @@ public class PlayerController : UnitController
                     if (moveTime >= 0.5 / movementSpeed)
                     {
                         MoveToTile(_targetTile, worldMoveStep * 2);
-                    }
-                    else if(moveTime <= 0)
+                    } else if (!StoppedMoving)
                     {
+                        StoppedMoving = true;
                         transform.position = _targetTile.transform.position;
                         _occupiedTile.ClearTileObject();
                         _occupiedTile = _targetTile;
                         _position = _occupiedTile.GetPosition();
-                        _currentState = (int) States.Idle;
+                    }
+                    
+                    if(moveTime <= 0)
+                    {
+                        ChangeState(States.Idle);
                     }
                     
                     moveTime -= Time.deltaTime;
@@ -132,8 +138,25 @@ public class PlayerController : UnitController
 
         return 0;
     }
-    
-    
+
+    private void ChangeState(States newState)
+    {
+        switch ((int) newState)
+        {
+            case 0:
+            {
+                _currentState = 0;
+            }
+            break;
+
+            case 1:
+            {
+                StoppedMoving = false;
+                _currentState = 1;
+            }
+            break;
+        }
+    }
     
     
     
