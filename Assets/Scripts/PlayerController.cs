@@ -6,17 +6,15 @@ using System.Transactions;
 using UnityEngine;
 
 // ADD STATES ENUM, MOVE THE BLOODY PLAYER
-
 public class PlayerController : UnitController
 {
     // private List<IState> _states;
 
+    
     public static PlayerController _playerController;
     private float _moveTime;
     private bool _stoppedMoving;
     
-    [SerializeField] private float AttackCooldown = 1f;
-    private float _attacktime = 0;
 
     // Start is called before the first frame update
     protected override void Start()
@@ -44,7 +42,7 @@ public class PlayerController : UnitController
                 AttackingUpdate();
                 break;
         }
-        
+
 
     }
 
@@ -66,7 +64,15 @@ public class PlayerController : UnitController
                     }
                     else
                     {
-                        // TODO Implement attacking
+                        if (_attackTime <= 0 && UnitStatus.CanAttack() && occupiedTileObject.CompareTag("Enemy"))
+                        {
+                            UnitController unitController = (UnitController) occupiedTileObject;
+                            if (unitController.GetUnitType().CanBeAttacked())
+                            {
+                                ChangeState(States.Attacking);
+                                return;
+                            }
+                        }
                     }
                 }
                 else
@@ -77,6 +83,11 @@ public class PlayerController : UnitController
                 }
             }
         }
+        if (_attackTime > 0)
+        {
+            _attackTime -= Time.deltaTime;
+        }
+        
     }
 
     private void MovingUpdate()
@@ -100,12 +111,54 @@ public class PlayerController : UnitController
         }
                     
         _moveTime -= Time.deltaTime;
+        
+        if (_attackTime > 0)
+        {
+            _attackTime -= Time.deltaTime;
+        }
     }
 
     private void AttackingUpdate()
     {
+        KeyCode direction = GetInputDirection();
+        if (direction != 0)
+        {
+            ;
+            if (!GetTargetPosition(direction).Equals(_targetTile.GetPosition()))
+            {
+                ChangeState(States.Idle);
+                return;
+            }
+        }
         
+        if (_attackTime <= 0)
+        {
+            TileObject occupiedTileObject = _targetTile.GetOccupiedTileObject();
+            if (occupiedTileObject != null && occupiedTileObject.CompareTag("Enemy"))
+            {
+                UnitController unitController = (UnitController) occupiedTileObject;
+                if (unitController.GetUnitType().CanBeAttacked())
+                {
+                    unitController.GetAttacked(UnitStats.attackDamage);
+                    _attackTime = AttackCooldown;
+                }
+                else
+                {
+                    ChangeState(States.Idle);
+                }
+
+            }
+            else
+            {
+                ChangeState(States.Idle);
+            }
+        }
+        else
+        {
+            _attackTime -= Time.deltaTime;
+        }
     }
+    
     
     
     private Position GetTargetPosition(KeyCode keyCode)
@@ -157,7 +210,7 @@ public class PlayerController : UnitController
         return 0;
     }
 
-    private void ChangeState(States newState)
+    protected override void ChangeState(States newState)
     {
         switch ((int) newState)
         {
@@ -171,6 +224,12 @@ public class PlayerController : UnitController
             {
                 _stoppedMoving = false;
                 _currentState = 1;
+            }
+            break;
+            case 2:
+            {
+                _attackTime = AttackCooldown;
+                _currentState = 2;
             }
             break;
         }

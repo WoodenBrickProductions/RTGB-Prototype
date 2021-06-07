@@ -1,16 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class BasicEnemyController : UnitController
 {
     [SerializeField] private float wanderCooldown;
     [SerializeField] private float _wanderTime;
-
-    [SerializeField] private float AttackCooldown;
-    [SerializeField] private float _attackTime;
-
-    [SerializeField] private float MoveCooldown;
+    
     [SerializeField] private float _moveTime;
 
     [SerializeField] private bool _usePseudoRandom = false;
@@ -24,6 +19,7 @@ public class BasicEnemyController : UnitController
     // Start is called before the first frame update
     protected override void Start()
     {
+        tag = "Enemy";
         _pseudoRandomNumberGenerator = new PseudoRandomNumberGenerator(4);
         base.Start();
         _attackTime = AttackCooldown;
@@ -160,7 +156,7 @@ public class BasicEnemyController : UnitController
         return false;
     }
     
-    private void ChangeState(States newState)
+    protected override void ChangeState(States newState)
     {
         switch ((int) newState)
         {

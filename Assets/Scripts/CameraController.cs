@@ -6,7 +6,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     public static CameraController _cameraController;
-    [SerializeField] private UnitController cameraFollow;
+    [SerializeField] private UnitController cameraFollow = null;
     [SerializeField] private float movementSpeed = 1;
     private Camera mainCamera;
     private bool _targetChangedPosition = false;
@@ -21,6 +21,10 @@ public class CameraController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (cameraFollow == null)
+        {
+            cameraFollow = PlayerController._playerController;
+        }
         movementSpeed = cameraFollow.GetMovementSpeed();
         mainCamera = Camera.main;
         worldSpaceStep = BoardController._boardController.GetWorldTileSpacing();

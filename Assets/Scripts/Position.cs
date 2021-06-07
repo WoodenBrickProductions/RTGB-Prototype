@@ -17,4 +17,16 @@ public class Position
     {
         return new Position(p1.x + p2.x, p1.y + p2.y);
     }
+
+    public override bool Equals(object obj)
+    {
+        if (!obj.GetType().Equals(typeof(Position)))
+        {
+            return false;
+        }
+
+        Position pos = (Position) obj;
+        return (pos.x == x && pos.y == y);
+
+    }
 }

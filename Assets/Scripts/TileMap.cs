@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -8,11 +9,14 @@ using Random = UnityEngine.Random;
 public class TileMap : MonoBehaviour
 {
     [SerializeField] private Tile baseTile;
+    [SerializeField] private EnemyCluster enemyCluster;
     [SerializeField] private int xSize = 1;
     [SerializeField] private int ySize = 1;
     [SerializeField] private float worldSpacing = 1;
-    [SerializeField] private float spawnRate = 1;
+    [SerializeField] private float tileSpawnRate = 1;
+    [SerializeField] private float enemySpawnRate = 0.5f;
     [SerializeField] private float spawnScaling = 1;
+    [SerializeField] private bool generateEnemies = false;
     private Tile[,] tileMatrix;
     private float _perlinSeed;
 
@@ -30,7 +34,8 @@ public class TileMap : MonoBehaviour
         {
             for (int j = 0; j < ySize; j++)
             {
-                if (Mathf.PerlinNoise((i + _perlinSeed) * spawnScaling, (j + _perlinSeed) * spawnScaling) <= spawnRate)
+                float spawnValue = Mathf.PerlinNoise((i + _perlinSeed) * spawnScaling, (j + _perlinSeed) * spawnScaling);
+                if (spawnValue <= tileSpawnRate)
                 {
                     tileMatrix[i, j] = Instantiate(
                         baseTile,
@@ -38,6 +43,10 @@ public class TileMap : MonoBehaviour
                         Quaternion.identity,
                         transform);
                     tileMatrix[i, j].SetPosition(new Position(i, j));
+                    if (generateEnemies && spawnValue <= enemySpawnRate * tileSpawnRate)
+                    {
+                        // TODO: Add enemies to spawn
+                    }
                 }
                 else
                 {
