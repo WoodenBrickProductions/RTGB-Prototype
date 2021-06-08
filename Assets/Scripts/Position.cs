@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class Position
 {
     public int x { get; set; }
@@ -17,7 +19,17 @@ public class Position
     {
         return new Position(p1.x + p2.x, p1.y + p2.y);
     }
+    
+    public static Position operator -(Position p1, Position p2)
+    {
+        return new Position(p1.x - p2.x, p1.y - p2.y);
+    }
 
+    public static int Distance(Position p1, Position p2)
+    {
+        return Mathf.Abs(p1.x - p2.x) + Mathf.Abs(p1.y - p2.y);
+    }
+    
     public override bool Equals(object obj)
     {
         if (!obj.GetType().Equals(typeof(Position)))

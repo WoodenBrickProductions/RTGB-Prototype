@@ -124,11 +124,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   staticObject: 0
-  movementSpeed: 10
-  wanderCooldown: 0
-  _wanderTime: 2
-  AttackCooldown: 1
+  unitStatus:
+    movable: 0
+    attackable: 1
+    effectable: 1
+    interactable: 1
+    canAttack: 1
+  unitStats:
+    maxHealth: 10
+    currentHealth: 0
+    attackDamage: 1
+    experience: 1
+    level: 0
+    attackRange: 1
+  AttackCooldown: 2
   _attackTime: 0
-  MoveCooldown: 1
+  movementSpeed: 1
+  _currentState: 0
+  wanderCooldown: 5
+  _wanderTime: 5
   _moveTime: 0
   _usePseudoRandom: 1
+  agroRange: 3

@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
+
 public class BasicEnemyController : UnitController
 {
     [SerializeField] private float wanderCooldown;
@@ -10,13 +13,18 @@ public class BasicEnemyController : UnitController
 
     [SerializeField] private bool _usePseudoRandom = false;
 
+    [SerializeField] private int agroRange = 1;
+    
+    private PlayerController _playerController;
     private PseudoRandomNumberGenerator _pseudoRandomNumberGenerator;
     private bool _stoppedMoving;
     private List<Position> _possibleMoves;
+    private Position _lastPlayerPosition;
     
-    private bool _engaged = false;
+    private bool _chasing = false;
     
     // Start is called before the first frame update
+
     protected override void Start()
     {
         tag = "Enemy";
@@ -28,7 +36,7 @@ public class BasicEnemyController : UnitController
         _possibleMoves.Add(Position.Right);
         _possibleMoves.Add(Position.Down);
         _possibleMoves.Add(Position.Left);
-
+        _playerController = PlayerController._playerController;
     }
 
     // Update is called once per frame
@@ -45,6 +53,11 @@ public class BasicEnemyController : UnitController
             case 2: // ATTACKING
                 AttackingUpdate();
                 break;
+            case 3: // DISABLED
+                break;
+            case 4:
+                ChasingUpdate();
+                break;
         }
 
         if (_attackTime > 0)
@@ -55,7 +68,8 @@ public class BasicEnemyController : UnitController
 
     private void IdleUpdate()
     {
-        if (!_engaged && _wanderTime <= 0)
+        // TODO: Can it be chasing and still end up here?
+        if (!_chasing && _wanderTime <= 0)
         {
             if (Wander())
             {
@@ -91,7 +105,7 @@ public class BasicEnemyController : UnitController
             _position = _occupiedTile.GetPosition();
         }else if(_moveTime <= 0)
         {
-            ChangeState(States.Idle);
+            ChangeState(_chasing ? States.Chasing : States.Idle);
         }
                     
 
@@ -101,12 +115,76 @@ public class BasicEnemyController : UnitController
 
     private void AttackingUpdate()
     {
-        
+        if (_attackTime <= 0)
+        {
+            TileObject occupiedTileObject = _targetTile.GetOccupiedTileObject();
+            if (occupiedTileObject != null && occupiedTileObject.CompareTag("Player"))
+            {
+                UnitController unitController = (UnitController) occupiedTileObject;
+                if (unitController.GetUnitStatus().CanBeAttacked())
+                {
+                    if (Attack(unitController))
+                    {
+                        _attackTime = AttackCooldown;
+                    }
+                    else
+                    {
+                        //Enemy unit killed
+                        ChangeState(States.Idle);
+                    }
+                }
+                else
+                {
+                    ChangeState(States.Chasing);
+                }
+
+            }
+            else
+            {
+                ChangeState(States.Chasing);
+            }
+        }
+        else
+        {
+            _attackTime -= Time.deltaTime;
+        }
     }
 
-    public bool IsEngaged()
+    private void ChasingUpdate()
     {
-        return _engaged;
+        if (_chasing)
+        {
+            if (IsPlayerInAttackRange())
+            {
+                ChangeState(States.Attacking);
+            }
+            else
+            {
+                Chase();
+            }
+        }
+        else
+        {
+            ChangeState(States.Idle);
+        }
+    }
+
+    private void Chase()
+    {
+        if (FindPathToPlayer())
+        {
+            ChangeState(States.Moving);
+        }
+        else
+        {
+            _chasing = false;
+            ChangeState(States.Idle);
+        }
+    }
+    
+    public bool IsChasing()
+    {
+        return _chasing;
     }
 
     private bool Wander()
@@ -139,7 +217,11 @@ public class BasicEnemyController : UnitController
                     }
                     else
                     {
-                        // TODO Implement attacking
+                        if (occupiedTileObject.CompareTag("Player"))
+                        {
+                            ChangeState(States.Chasing);
+                            return false;
+                        }
                     }
                 }
                 else
@@ -162,20 +244,118 @@ public class BasicEnemyController : UnitController
         {
             case 0:
             {
-                _currentState = 0;
-            }
+                if (CheckForPlayerInRange())
+                {
+                    _lastPlayerPosition = GetPlayerPosition();
+                    _chasing = true;
+                    _currentState = (int) States.Chasing;
+                    return;
+                }
                 break;
+            }
             case 1:
             {
                 _stoppedMoving = false;
-                _currentState = 1;
             }
                 break;
             case 2:
             {
-                _currentState = 2;
+                
+            }
+                break;
+            case 3:
+            {
+                _lastPlayerPosition = GetPlayerPosition();
+                _chasing = true;
             }
                 break;
         }
+
+        _currentState = (int) newState;
+    }
+
+    private Position GetPlayerPosition()
+    {
+        return _playerController.GetOccupiedTile().GetPosition();
+    }
+
+    private bool IsPlayerInAttackRange()
+    {
+        return (Position.Distance(_lastPlayerPosition, _position) <= unitStats.attackRange);
+    }
+    
+    private bool CheckForPlayerInRange()
+    {
+        _lastPlayerPosition = _playerController.GetOccupiedTile().GetPosition();
+        int distance = Position.Distance(_lastPlayerPosition, _position);
+        if(distance <= agroRange)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool FindPathToPlayer()
+    {
+        Node start = new Node();
+        start.position = _position;
+        List<Position> result = new List<Position>();
+        List<Position> visited = new List<Position>();
+        Queue<Node> work = new Queue<Node>();
+        
+         
+        start.history = new List<Position>();
+        visited.Add(start.position);
+        work.Enqueue(start);
+        
+        while(work.Count > 0)
+        {
+            Node current = work.Dequeue();
+            Tile tile = boardController.GetTile(current.position);
+            if (tile != null)
+            {
+                
+                TileObject occupiedObject = tile.GetOccupiedTileObject();
+                if(occupiedObject != null && occupiedObject.CompareTag("Player"))
+                {
+                    //Found Node
+                    result = current.history;
+                    result.Add(current.position);
+                    _targetTile = boardController.GetTile(result[1]);
+                    return true;
+                }
+                else
+                {
+                    //Didn't find Node
+                    for(int i = 0; i < _possibleMoves.Count; i++)
+                    {
+                        Tile neighborTile = boardController.GetTile(_possibleMoves[i] + current.position);
+                        if (neighborTile != null && !neighborTile.IsStaticTile() &&
+                            (occupiedObject == null || occupiedObject.CompareTag("Enemy")))
+                        {
+                            Node currentNeighbor = new Node();
+                            currentNeighbor.position = neighborTile.GetPosition();
+                            if (!visited.Contains(currentNeighbor.position))
+                            {
+                                currentNeighbor.history = new List<Position>(current.history);
+                                currentNeighbor.history.Add(current.position);
+                                visited.Add(currentNeighbor.position);
+                                work.Enqueue(currentNeighbor);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private class Node
+    {
+        public Position position;
+        public List<Position> history;
+        
     }
 }

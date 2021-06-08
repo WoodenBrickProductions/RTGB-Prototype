@@ -5,11 +5,11 @@ using UnityEngine;
 [System.Serializable]
 public class UnitStatus
 {
-    [SerializeField] private bool movable = true;
-    [SerializeField] private bool attackable = true;
-    [SerializeField] private bool effectable = true;
-    [SerializeField] private bool interactable = true;
-    [SerializeField] private bool canAttack = true;
+    public bool movable = true;
+    public bool attackable = true;
+    public bool effectable = true;
+    public bool interactable = true;
+    public bool canAttack = true;
 
     public UnitStatus(bool movable, bool attackable, bool effectable, bool interactable, bool canAttack)
     {
@@ -19,6 +19,17 @@ public class UnitStatus
         this.interactable = interactable;
         this.canAttack = canAttack;
     }
+    
+    public UnitStatus(UnitStatus unitStatus)
+    {
+        this.movable = unitStatus.movable;
+        this.attackable = unitStatus.attackable;
+        this.effectable = unitStatus.effectable;
+        this.interactable = unitStatus.interactable;
+        this.canAttack = unitStatus.canAttack;
+    }
+
+
     
     public bool CanBeMoved()
     {

@@ -9,7 +9,8 @@ public enum States
     Idle = 0,
     Moving = 1,
     Attacking = 2,
-    Disabled = 3
+    Disabled = 3,
+    Chasing = 4
 }
 
 [Serializable]
@@ -30,10 +31,10 @@ public struct Stats
     public float attackDamage;
 }
 
-public class UnitController : TileObject
+public class UnitController : TileObject, IAttackable, IDealsDamage
 {
-    [SerializeField] protected UnitStatus UnitStatus;
-    [SerializeField] protected UnitStats UnitStats;
+    [SerializeField] protected UnitStatus unitStatus;
+    [SerializeField] protected UnitStats unitStats;
 
     [SerializeField] protected float AttackCooldown; // TODO: Change to attack speed?
     [SerializeField] protected float _attackTime;
@@ -46,7 +47,7 @@ public class UnitController : TileObject
     protected override void Start()
     {
         base.Start();
-        UnitStats.currentHealth = UnitStats.maxHealth;
+        unitStats.currentHealth = unitStats.maxHealth;
     }
 
     protected void MoveToTile(Tile tile, float worldMovementStep)
@@ -65,54 +66,89 @@ public class UnitController : TileObject
 
     public float GetCurrentHealth()
     {
-        return UnitStats.currentHealth;
+        return unitStats.currentHealth;
     }
 
-    private void SetHealth(float healthChange)
+    private void SetHealth(int healthChange)
     {
-        if (UnitStats.currentHealth <= healthChange)
+        if (unitStats.currentHealth + healthChange <= 0)
         {
-            UnitStats.currentHealth = 0;
+            unitStats.currentHealth = 0;
             OnHealthReachesZero();
         }
-        else if (UnitStats.currentHealth + healthChange > UnitStats.currentHealth)
+        else if (unitStats.currentHealth + healthChange > unitStats.currentHealth)
         {
-            UnitStats.currentHealth = UnitStats.maxHealth;
+            unitStats.currentHealth = unitStats.maxHealth;
         }
         else
         {
-            UnitStats.currentHealth += healthChange;
+            unitStats.currentHealth += healthChange;
         }
     }
 
     // Called when health reaches 0 while calling SetHealth
     protected virtual void OnHealthReachesZero()
     {
-        _occupiedTile.ClearTileObject();
+        unitStatus.attackable = false;
         ChangeState(States.Disabled);
-        gameObject.SetActive(false);
-        Destroy(gameObject);
+
     }
     
-    public bool GetAttacked(float damage)
+    public virtual bool GetAttacked(DamageSource damageSource)
     {
-        if (UnitStatus.CanBeAttacked())
+        if (unitStatus.CanBeAttacked())
         {
-            SetHealth(-damage);
+            SetHealth(damageSource.GetDamageAmount());
+            if (unitStats.currentHealth == 0)
+            {
+                damageSource.GetDamageSourceObject().OnTargetObjectKilled(this);
+                OnDeath(damageSource);
+            }
             return true;
         }
         return false;
     }
     
-    public UnitStatus GetUnitType()
+    public virtual bool Attack(IAttackable target)
     {
-        return UnitStatus;
+        return target.GetAttacked(new DamageSource(this, DamageType.Attack, -unitStats.attackDamage));
+    }
+
+    public virtual void OnTargetObjectKilled(IAttackable target)
+    {
+        print("I: " + name + " killed " + target);
+    }
+
+    public virtual void OnDeath(DamageSource damageSource)
+    {
+        _occupiedTile.ClearTileObject();
+        Destroy(gameObject);
+        gameObject.SetActive(false);
+    }
+
+    public GameObject GetGameObject()
+    {
+        return gameObject;
+    }
+
+    public UnitStatus GetUnitStatus()
+    {
+        UnitStatus status = new UnitStatus(unitStatus);
+        return status;
+    }
+
+    public UnitStats GetUnitStats()
+    {
+        UnitStats stats = new UnitStats(unitStats);
+        return stats;
     }
 
     protected virtual void ChangeState(States newState)
     {
         _currentState = (int) newState;
     }
+
+
 }
 
 

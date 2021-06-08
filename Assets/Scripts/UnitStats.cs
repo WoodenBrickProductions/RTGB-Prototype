@@ -5,8 +5,21 @@ using UnityEngine;
 [System.Serializable]
 public class UnitStats
 {
-    public float maxHealth = 1;
-    public float currentHealth;
+    public int maxHealth = 1;
+    public int currentHealth;
 
-    public float attackDamage;
+    public int attackDamage;
+    public int experience;
+    public int level;
+    public int attackRange = 1;
+
+    public UnitStats(UnitStats unitStats)
+    {
+        this.maxHealth = unitStats.maxHealth;
+        this.currentHealth = unitStats.currentHealth;
+        this.attackDamage = unitStats.attackDamage;
+        this.experience = unitStats.experience;
+        this.level = unitStats.level;
+
+    }
 }

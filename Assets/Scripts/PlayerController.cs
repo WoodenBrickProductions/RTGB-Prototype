@@ -14,7 +14,11 @@ public class PlayerController : UnitController
     public static PlayerController _playerController;
     private float _moveTime;
     private bool _stoppedMoving;
-    
+
+    private void Awake()
+    {
+        _playerController = this;
+    }
 
     // Start is called before the first frame update
     protected override void Start()
@@ -64,10 +68,10 @@ public class PlayerController : UnitController
                     }
                     else
                     {
-                        if (_attackTime <= 0 && UnitStatus.CanAttack() && occupiedTileObject.CompareTag("Enemy"))
+                        if (_attackTime <= 0 && unitStatus.CanAttack() && occupiedTileObject.CompareTag("Enemy"))
                         {
                             UnitController unitController = (UnitController) occupiedTileObject;
-                            if (unitController.GetUnitType().CanBeAttacked())
+                            if (unitController.GetUnitStatus().CanBeAttacked())
                             {
                                 ChangeState(States.Attacking);
                                 return;
@@ -117,7 +121,7 @@ public class PlayerController : UnitController
             _attackTime -= Time.deltaTime;
         }
     }
-
+    
     private void AttackingUpdate()
     {
         KeyCode direction = GetInputDirection();
@@ -137,10 +141,17 @@ public class PlayerController : UnitController
             if (occupiedTileObject != null && occupiedTileObject.CompareTag("Enemy"))
             {
                 UnitController unitController = (UnitController) occupiedTileObject;
-                if (unitController.GetUnitType().CanBeAttacked())
+                if (unitController.GetUnitStatus().CanBeAttacked())
                 {
-                    unitController.GetAttacked(UnitStats.attackDamage);
-                    _attackTime = AttackCooldown;
+                    if (Attack(unitController))
+                    {
+                        _attackTime = AttackCooldown;
+                    }
+                    else
+                    {
+                        //Enemy unit killed
+                        ChangeState(States.Idle);
+                    }
                 }
                 else
                 {
@@ -158,9 +169,24 @@ public class PlayerController : UnitController
             _attackTime -= Time.deltaTime;
         }
     }
-    
-    
-    
+
+    public override void OnTargetObjectKilled(IAttackable target)
+    {
+        base.OnTargetObjectKilled(target);
+        ChangeState(States.Idle);
+        GameObject targetObject = target.GetGameObject();
+        if (targetObject.CompareTag("Enemy"))
+        {
+            unitStats.experience += targetObject.GetComponent<UnitController>().GetUnitStats().experience;
+        }
+    }
+
+    public override void OnDeath(DamageSource damageSource)
+    {
+        // TODO: GameOver
+        base.OnDeath(damageSource);
+    }
+
     private Position GetTargetPosition(KeyCode keyCode)
     {
         if (keyCode == KeyCode.W)
@@ -210,6 +236,8 @@ public class PlayerController : UnitController
         return 0;
     }
 
+
+    
     protected override void ChangeState(States newState)
     {
         switch ((int) newState)
