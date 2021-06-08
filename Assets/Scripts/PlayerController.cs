@@ -81,9 +81,10 @@ public class PlayerController : UnitController
                 }
                 else
                 {
-                    _targetTile.SetTileObject(this);
-                    ChangeState(States.Moving);
-                    _moveTime = 1.0f / movementSpeed;
+                    if (_targetTile.SetTileObject(this))
+                    {
+                        ChangeState(States.Moving);
+                    }
                 }
             }
         }
@@ -250,6 +251,7 @@ public class PlayerController : UnitController
 
             case 1:
             {
+                _moveTime = 1.0f / movementSpeed;
                 _stoppedMoving = false;
                 _currentState = 1;
             }

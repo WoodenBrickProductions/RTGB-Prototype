@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -14,14 +15,17 @@ public class BasicEnemyController : UnitController
     [SerializeField] private bool _usePseudoRandom = false;
 
     [SerializeField] private int agroRange = 1;
-    
+
+    [SerializeField] private float ChasingCooldown = 0.25f;
+    [SerializeField] private int chasingRange = 100;
     private PlayerController _playerController;
     private PseudoRandomNumberGenerator _pseudoRandomNumberGenerator;
     private bool _stoppedMoving;
     private List<Position> _possibleMoves;
     private Position _lastPlayerPosition;
+    private float chasingTime;
     
-    private bool _chasing = false;
+    [SerializeField] private bool _chasing = false;
     
     // Start is called before the first frame update
 
@@ -64,16 +68,25 @@ public class BasicEnemyController : UnitController
         {
             _attackTime -= Time.deltaTime;
         }
+        
+        if (chasingTime > 0)
+        {
+            chasingTime -= Time.deltaTime;
+        }
     }
 
     private void IdleUpdate()
     {
+        print("InsideIdle");
         // TODO: Can it be chasing and still end up here?
         if (!_chasing && _wanderTime <= 0)
         {
             if (Wander())
             {
-                ChangeState(States.Moving);
+                if (_targetTile.SetTileObject(this))
+                {
+                    ChangeState(States.Moving);
+                }
             }
             _wanderTime = wanderCooldown;
         }
@@ -144,10 +157,6 @@ public class BasicEnemyController : UnitController
                 ChangeState(States.Chasing);
             }
         }
-        else
-        {
-            _attackTime -= Time.deltaTime;
-        }
     }
 
     private void ChasingUpdate()
@@ -157,28 +166,44 @@ public class BasicEnemyController : UnitController
             if (IsPlayerInAttackRange())
             {
                 ChangeState(States.Attacking);
-            }
+            }                        
             else
             {
-                Chase();
+                if (chasingTime <= 0)
+                {
+                    Chase();
+                }
             }
         }
         else
         {
             ChangeState(States.Idle);
         }
+
+
     }
 
     private void Chase()
     {
         if (FindPathToPlayer())
         {
-            ChangeState(States.Moving);
+            if (_targetTile.SetTileObject(this))
+            {
+                ChangeState(States.Moving);
+            }
         }
         else
         {
-            _chasing = false;
-            ChangeState(States.Idle);
+            if (IsPlayerInChasingRange())
+            {
+                chasingTime = ChasingCooldown;
+            }
+            else
+            {
+                _chasing = false;
+                ChangeState(States.Idle);
+                chasingTime = ChasingCooldown;
+            }
         }
     }
     
@@ -187,6 +212,7 @@ public class BasicEnemyController : UnitController
         return _chasing;
     }
 
+    // Set next possible tile to wander to
     private bool Wander()
     {
         int randomValue;
@@ -226,12 +252,8 @@ public class BasicEnemyController : UnitController
                 }
                 else
                 {
-                    if (_targetTile.SetTileObject(this))
-                    {
-                        ChangeState(States.Moving);
-                        _moveTime = 1.0f / movementSpeed;
-                        return true;
-                    }
+                    return true;
+
                 }
             }
         }
@@ -255,12 +277,13 @@ public class BasicEnemyController : UnitController
             }
             case 1:
             {
+                _moveTime = 1.0f / movementSpeed;
                 _stoppedMoving = false;
             }
                 break;
             case 2:
             {
-                
+                _attackTime = AttackCooldown;
             }
                 break;
             case 3:
@@ -281,7 +304,28 @@ public class BasicEnemyController : UnitController
 
     private bool IsPlayerInAttackRange()
     {
-        return (Position.Distance(_lastPlayerPosition, _position) <= unitStats.attackRange);
+        _lastPlayerPosition = _playerController.GetOccupiedTile().GetPosition();
+        int distance = Position.Distance(_lastPlayerPosition, _position);
+        if (distance <= unitStats.attackRange)
+        {
+            _targetTile = boardController.GetTile(_lastPlayerPosition);
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool IsPlayerInChasingRange()
+    {
+        _lastPlayerPosition = _playerController.GetOccupiedTile().GetPosition();
+        int distance = Position.Distance(_lastPlayerPosition, _position);
+        if (distance <= chasingRange)
+        {
+            _targetTile = boardController.GetTile(_lastPlayerPosition);
+            return true;
+        }
+
+        return false;
     }
     
     private bool CheckForPlayerInRange()
@@ -312,12 +356,16 @@ public class BasicEnemyController : UnitController
         while(work.Count > 0)
         {
             Node current = work.Dequeue();
-            Tile tile = boardController.GetTile(current.position);
-            if (tile != null)
+            if (current.history.Count > chasingRange)
+            {
+                return false;
+            }
+            Tile currentTile = boardController.GetTile(current.position);
+            if (currentTile != null)
             {
                 
-                TileObject occupiedObject = tile.GetOccupiedTileObject();
-                if(occupiedObject != null && occupiedObject.CompareTag("Player"))
+                TileObject currentOccupiedObject = currentTile.GetOccupiedTileObject();
+                if(currentOccupiedObject != null && currentOccupiedObject.CompareTag("Player"))
                 {
                     //Found Node
                     result = current.history;
@@ -332,7 +380,7 @@ public class BasicEnemyController : UnitController
                     {
                         Tile neighborTile = boardController.GetTile(_possibleMoves[i] + current.position);
                         if (neighborTile != null && !neighborTile.IsStaticTile() &&
-                            (occupiedObject == null || occupiedObject.CompareTag("Enemy")))
+                            (neighborTile.GetOccupiedTileObject() == null || neighborTile.GetOccupiedTileObject().CompareTag("Player")))
                         {
                             Node currentNeighbor = new Node();
                             currentNeighbor.position = neighborTile.GetPosition();
