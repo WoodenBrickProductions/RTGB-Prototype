@@ -43,10 +43,12 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
     [SerializeField] protected int _currentState = 0;
     protected float worldMoveStep = 1;
     protected Tile _targetTile;
-
+    private UIController uiController;
+    
     protected override void Start()
     {
         base.Start();
+        uiController = UIController.uiController;
         unitStats.currentHealth = unitStats.maxHealth;
     }
 
@@ -84,6 +86,7 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
         {
             unitStats.currentHealth += healthChange;
         }
+        uiController.SetHealth(this);
     }
 
     // Called when health reaches 0 while calling SetHealth
@@ -121,6 +124,7 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
 
     public virtual void OnDeath(DamageSource damageSource)
     {
+        uiController.OnEnemyKilled(this);
         _occupiedTile.ClearTileObject();
         Destroy(gameObject);
         gameObject.SetActive(false);

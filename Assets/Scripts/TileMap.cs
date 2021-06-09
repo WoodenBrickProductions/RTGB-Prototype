@@ -45,14 +45,14 @@ public class TileMap : MonoBehaviour
                         baseTile,
                         transform.position + new Vector3(i * worldSpacing, 0, j * worldSpacing),
                         Quaternion.identity,
-                        transform);
+                        transform.GetChild(0));
                     tileMatrix[i, j].SetPosition(new Position(i, j));
                     if (spawnValue > tileSpawnRate * (1 - wallSpawning))
                     {
                         TileObject wall = Instantiate(wallObject,
                             transform.position + new Vector3(i * worldSpacing, 0, j * worldSpacing),
                             Quaternion.identity, 
-                            transform);
+                            transform.GetChild(0));
                         InitializePosition(wall);
                     }
                 }
@@ -62,7 +62,7 @@ public class TileMap : MonoBehaviour
                         baseTile,
                         transform.position + new Vector3(i * worldSpacing, 0, j * worldSpacing),
                         Quaternion.identity,
-                        transform);
+                        transform.GetChild(0));
                     tileMatrix[i, j].SetStaticTile(true);
                     tileMatrix[i, j].SetPosition(new Position(i, j));
                 }
@@ -79,10 +79,7 @@ public class TileMap : MonoBehaviour
                 for (int j = 0; j < ySize; j++)
                 {
                     float spawnValue = Mathf.PerlinNoise((i + _perlinSeed) * spawnScaling, (j + _perlinSeed) * spawnScaling);
-                    if (tileMatrix[i, j].IsStaticTile() && tileMatrix[i, j].GetOccupiedTileObject() != null)
-                    {
-                    }
-                    else
+                    if (!tileMatrix[i, j].IsStaticTile() && tileMatrix[i, j].GetOccupiedTileObject() == null)
                     {
                         if (spawnValue <= enemySpawnRate)
                         {
@@ -93,8 +90,9 @@ public class TileMap : MonoBehaviour
                                     TileObject enemy = Instantiate(enemySpawner.enemy,
                                         transform.position + new Vector3(i * worldSpacing, 0, j * worldSpacing),
                                         Quaternion.identity, 
-                                        transform);
+                                        transform.GetChild(2));
                                     InitializePosition(enemy);
+                                    break;
                                 }
                             }
                         }

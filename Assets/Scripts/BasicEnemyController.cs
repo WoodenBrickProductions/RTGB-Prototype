@@ -32,6 +32,7 @@ public class BasicEnemyController : UnitController
     protected override void Start()
     {
         tag = "Enemy";
+        _wanderTime = _wanderTime + Random.value;
         _pseudoRandomNumberGenerator = new PseudoRandomNumberGenerator(4);
         base.Start();
         _attackTime = AttackCooldown;
@@ -78,7 +79,7 @@ public class BasicEnemyController : UnitController
     private void IdleUpdate()
     {
         // TODO: Can it be chasing and still end up here?
-        if (!_chasing && _wanderTime <= 0)
+        if (unitStatus.canAttack && !_chasing && _wanderTime <= 0)
         {
             if (Wander())
             {
@@ -147,7 +148,8 @@ public class BasicEnemyController : UnitController
                 }
                 else
                 {
-                    ChangeState(States.Chasing);
+                    _chasing = false;
+                    ChangeState(States.Idle);
                 }
 
             }
@@ -265,7 +267,7 @@ public class BasicEnemyController : UnitController
         {
             case 0:
             {
-                if (CheckForPlayerInRange())
+                if (_playerController.GetUnitStatus().CanBeAttacked() && CheckForPlayerInRange())
                 {
                     _lastPlayerPosition = GetPlayerPosition();
                     _chasing = true;
