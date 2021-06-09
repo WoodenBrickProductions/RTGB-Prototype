@@ -1466,7 +1466,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2060429720
 GameObject:
@@ -1690,7 +1690,7 @@ PrefabInstance:
     - target: {fileID: 1511287156373428934, guid: d22e4d112a7503c48b710917d694f4ee,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1511287156373428934, guid: d22e4d112a7503c48b710917d694f4ee,
         type: 3}
@@ -1808,12 +1808,12 @@ PrefabInstance:
     - target: {fileID: 3146562368116733893, guid: 673637af6e8090943ae3e421a9024284,
         type: 3}
       propertyPath: xSize
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3146562368116733893, guid: 673637af6e8090943ae3e421a9024284,
         type: 3}
       propertyPath: ySize
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3146562368116733893, guid: 673637af6e8090943ae3e421a9024284,
         type: 3}
@@ -1828,7 +1828,7 @@ PrefabInstance:
     - target: {fileID: 3146562368116733893, guid: 673637af6e8090943ae3e421a9024284,
         type: 3}
       propertyPath: tileSpawnRate
-      value: 1
+      value: 0.61
       objectReference: {fileID: 0}
     - target: {fileID: 3146562368116733893, guid: 673637af6e8090943ae3e421a9024284,
         type: 3}
@@ -1850,7 +1850,7 @@ PrefabInstance:
     - target: {fileID: 3146562368116733893, guid: 673637af6e8090943ae3e421a9024284,
         type: 3}
       propertyPath: wallSpawning
-      value: 0.13
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3146562368116733893, guid: 673637af6e8090943ae3e421a9024284,
         type: 3}

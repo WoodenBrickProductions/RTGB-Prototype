@@ -50,7 +50,6 @@ public class BoardController : MonoBehaviour
                     tileObject.SetPosition(tile.GetPosition());
                     tileObject.transform.position = tile.transform.position;
                     tileObject.SetOccupiedTile(tile);
-                    tile.SetTileObject(tileObject);
                 }
                 else
                 {

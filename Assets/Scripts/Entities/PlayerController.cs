@@ -11,6 +11,8 @@ public class PlayerController : UnitController
     public static PlayerController _playerController;
     private bool _stoppedMoving;
     private KeyCode _inputDirection;
+    private KeyCode newInput = 0;
+    private KeyCode changeInput = 0;
     
     protected void Awake()
     {
@@ -21,7 +23,6 @@ public class PlayerController : UnitController
     {
         base.Start();
         staticObject = false;
-        WorldMoveStep = boardController.GetWorldTileSpacing();
     }
 
     void Update()
@@ -29,22 +30,28 @@ public class PlayerController : UnitController
         switch (currentState)
         {
             case 0: // IDLE
+                newInput = GetInputDirection();
                 IdleUpdate();
                 break;
             case 1: // MOVING
                 MovingUpdate();
                 break;
             case 2: // ATTACKING
+                newInput = GetInputDirection();
                 AttackingUpdate();
                 break;
             case 3: // DISABLED
                 break;
         }
+        if (attackTime > 0)
+        {
+            attackTime -= Time.deltaTime;
+        }
     }
 
     private void IdleUpdate()
     {
-        _inputDirection = GetInputDirection();
+        _inputDirection = newInput;
         if (_inputDirection != 0)
         {
             Position targetPosition = GetTargetPosition(_inputDirection);
@@ -80,11 +87,6 @@ public class PlayerController : UnitController
                 }
             }
         }
-        if (attackTime > 0)
-        {
-            attackTime -= Time.deltaTime;
-        }
-        
     }
 
     private void MovingUpdate()
@@ -101,30 +103,48 @@ public class PlayerController : UnitController
             _position = _occupiedTile.GetPosition();
             transform.position = TargetTile.transform.position;
         }
-                    
+
         if(moveTime <= 0)
         {
             ChangeState(States.Idle);
         }
-                    
-        moveTime -= Time.deltaTime;
         
-        if (attackTime > 0)
-        {
-            attackTime -= Time.deltaTime;
-        }
+        moveTime -= Time.deltaTime;
     }
     
     private void AttackingUpdate()
     {
-        _inputDirection = GetInputDirection();
-        if (_inputDirection != 0)
+        if (newInput != 0 && newInput != _inputDirection)
         {
-            ;
-            if (!GetTargetPosition(_inputDirection).Equals(TargetTile.GetPosition()))
+            Position targetPosition = GetTargetPosition(newInput);
+            Tile newTile = boardController.GetTile(targetPosition);
+            if (newTile != null && !newTile.IsStaticTile())
             {
-                ChangeState(States.Idle);
-                return;
+                TileObject occupiedTileObject = newTile.GetOccupiedTileObject();
+                if (occupiedTileObject != null)
+                {
+                    if(!occupiedTileObject.IsStaticObject())
+                    {
+                        if (unitStatus.CanAttack() && occupiedTileObject.CompareTag("Enemy"))
+                        {
+                            UnitController unitController = (UnitController) occupiedTileObject;
+                            if (unitController.GetUnitStatus().CanBeAttacked())
+                            {
+                                changeInput = newInput;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (newTile.SetTileObject(this))
+                    {
+                        TargetTile = newTile;
+                        _inputDirection = newInput;
+                        ChangeState(States.Moving);
+                        return;
+                    }
+                }
             }
         }
         
@@ -142,24 +162,61 @@ public class PlayerController : UnitController
                     }
                     else
                     {
-                        //Enemy unit killed
                         ChangeState(States.Idle);
+                        return;
                     }
                 }
                 else
                 {
                     ChangeState(States.Idle);
-                }
+                    return;
 
+                }
             }
             else
             {
                 ChangeState(States.Idle);
+                return;
             }
-        }
-        else
-        {
-            attackTime -= Time.deltaTime;
+            
+            if (changeInput != 0)
+            {
+                Position targetPosition = GetTargetPosition(changeInput);
+                Tile newTile = boardController.GetTile(targetPosition);
+                if (newTile != null && !newTile.IsStaticTile())
+                {
+                    occupiedTileObject = newTile.GetOccupiedTileObject();
+                    if (occupiedTileObject != null)
+                    {
+                        if(!occupiedTileObject.IsStaticObject())
+                        {
+                            if (unitStatus.CanAttack() && occupiedTileObject.CompareTag("Enemy"))
+                            {
+                                UnitController unitController = (UnitController) occupiedTileObject;
+                                if (unitController.GetUnitStatus().CanBeAttacked())
+                                {
+                                    _inputDirection = changeInput;
+                                    TargetTile = newTile;
+                                    ChangeState(States.Attacking);
+                                    // Continue attack state with new target
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Change to moving, shouldn't occur because of attack cancelling
+                        TargetTile = newTile;
+                        print("This shouldn't be called!");
+                        if (TargetTile.SetTileObject(this))
+                        {
+                            ChangeState(States.Moving);
+                            return;
+                        }
+                    }
+                }
+                changeInput = 0;
+            }
         }
     }
 
@@ -229,8 +286,6 @@ public class PlayerController : UnitController
 
         return 0;
     }
-
-
     
     protected override void ChangeState(States newState)
     {

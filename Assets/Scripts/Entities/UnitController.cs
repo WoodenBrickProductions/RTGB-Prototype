@@ -36,6 +36,7 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
     protected override void Start()
     {
         base.Start();
+        WorldMoveStep = boardController.GetWorldTileSpacing();
         _uiController = UIController.uiController;
         unitStats.currentHealth = unitStats.maxHealth;
         attackCooldown = 1.0f / unitStats.attackSpeed;

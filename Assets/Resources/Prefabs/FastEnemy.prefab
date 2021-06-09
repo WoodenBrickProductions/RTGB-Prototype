@@ -127,24 +127,26 @@ MonoBehaviour:
     interactable: 1
     canAttack: 1
   unitStats:
-    maxHealth: 10
+    maxHealth: 4
     currentHealth: 0
     attackDamage: 1
     experience: 1
     level: 0
     attackRange: 1
-  AttackCooldown: 1.25
-  _attackTime: 0
-  movementSpeed: 4
-  _currentState: 0
+    attackSpeed: 1
+  movementSpeed: 3
+  moveTime: 0
+  attackTime: 0
+  currentState: 0
+  attackCooldown: 1
   wanderCooldown: 1
-  _wanderTime: 1
-  _moveTime: 0
-  _usePseudoRandom: 1
   agroRange: 7
-  ChasingCooldown: 0.25
   chasingRange: 10
-  _chasing: 0
+  chasingCooldown: 0.25
+  usePseudoRandom: 0
+  wanderTime: 0
+  chasingTime: 0
+  chasing: 0
 --- !u!1 &1575722149897310335
 GameObject:
   m_ObjectHideFlags: 0

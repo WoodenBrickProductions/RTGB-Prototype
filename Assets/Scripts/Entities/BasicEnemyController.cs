@@ -107,7 +107,45 @@ public class BasicEnemyController : UnitController
             }
         }
     }
-
+    /**
+     * Set next possible tile to wander to, set's TargetTile
+     */
+    private bool Wander()
+    {
+        int randomValue;
+        if (usePseudoRandom)
+        {
+            randomValue = _pseudoRandomNumberGenerator.GetPseudoRandomNumber();
+        }
+        else
+        {
+            randomValue = (int) (Random.value * 4);
+        }
+        
+        int direction = randomValue;
+        for(int i = 0; i < 4; i++)
+        {
+            TargetTile = boardController.GetTile(
+                _position + _possibleMoves[(direction + i) % 4]);
+            if (TargetTile != null && !TargetTile.IsStaticTile())
+            {
+                TileObject occupiedTileObject = TargetTile.GetOccupiedTileObject();
+                if (occupiedTileObject != null)
+                {
+                    if (occupiedTileObject.IsStaticObject())
+                    {
+                        // Enemy encountered static object.
+                    }
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
     private void MovingUpdate()
     {
         if (moveTime >= 0.5 / movementSpeed)
@@ -192,6 +230,9 @@ public class BasicEnemyController : UnitController
         // chasingTime decrement is handled in Update.
     }
 
+    /**
+     * Chases after the player, set's targetTile if can find path to player.
+     */
     private void Chase()
     {
         if (FindPathToPlayer())
@@ -206,63 +247,6 @@ public class BasicEnemyController : UnitController
                 chasingTime = chasingCooldown;
         }
     }
-
-    // Set next possible tile to wander to, set's TargetTile
-    private bool Wander()
-    {
-        int randomValue;
-        if (usePseudoRandom)
-        {
-            randomValue = _pseudoRandomNumberGenerator.GetPseudoRandomNumber();
-        }
-        else
-        {
-            randomValue = (int) (Random.value * 4);
-        }
-        
-        int direction = randomValue;
-        for(int i = 0; i < 4; i++)
-        {
-            TargetTile = boardController.GetTile(
-                _position + _possibleMoves[(direction + i) % 4]);
-            if (TargetTile != null && !TargetTile.IsStaticTile())
-            {
-                TileObject occupiedTileObject = TargetTile.GetOccupiedTileObject();
-                if (occupiedTileObject != null)
-                {
-                    if (occupiedTileObject.IsStaticObject())
-                    {
-                        // Enemy encountered static object.
-                    }
-                }
-                else
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    // TODO: Change all range checks to be one function, where I pass in range value;
-    
-    // private bool IsPlayerInAttackRange()
-    // {
-    //     Tile playerTile = _playerController.GetOccupiedTile();
-    //     if (playerTile == null)
-    //     {
-    //         return false;
-    //     }
-    //     _lastPlayerPosition = playerTile.GetPosition();
-    //     int distance = Position.Distance(_lastPlayerPosition, _position);
-    //     if (distance <= unitStats.attackRange)
-    //     {
-    //         TargetTile = boardController.GetTile(_lastPlayerPosition);
-    //         return true;
-    //     }
-    //
-    //     return false;
-    // }
 
     /**
      * Checks if player is within range (grid-based), sets _lastPlayerPosition.
@@ -284,45 +268,6 @@ public class BasicEnemyController : UnitController
 
         return false;
     }
-    
-    // private bool IsPlayerInChasingRange()
-    // {
-    //     Tile playerTile = _playerController.GetOccupiedTile();
-    //     if (playerTile == null)
-    //     {
-    //         return false;
-    //     }
-    //     _lastPlayerPosition = playerTile.GetPosition();
-    //     int distance = Position.Distance(_lastPlayerPosition, _position);
-    //     if (distance <= chasingRange)
-    //     {
-    //         TargetTile = boardController.GetTile(_lastPlayerPosition);
-    //         return true;
-    //     }
-    //
-    //     return false;
-    // }
-    
-    // private bool CheckForPlayerInRange()
-    // {
-    //     Tile playerTile = _playerController.GetOccupiedTile();
-    //     if (playerTile == null)
-    //     {
-    //         return false;
-    //     }
-    //     _lastPlayerPosition = playerTile.GetPosition();
-    //     if (_lastPlayerPosition == null)
-    //     {
-    //         return false;
-    //     }
-    //     int distance = Position.Distance(_lastPlayerPosition, _position);
-    //     if(distance <= agroRange)
-    //     {
-    //         return true;
-    //     }
-    //
-    //     return false;
-    // }
 
     /**
      * Finds path to player, returns true if there is path to player or player is within chaseRange.

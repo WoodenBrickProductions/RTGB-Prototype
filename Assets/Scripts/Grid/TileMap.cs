@@ -164,6 +164,12 @@ public class TileMap : MonoBehaviour
             return false;
         }
 
+        if (tile.IsStaticTile())
+        {
+            print("Can't place object " + tileObject + " : tile is static at position " + tile.GetPosition());
+            return false;
+        }
+        
         if (tile.GetOccupiedTileObject() != null)
         {
             print("Can't place object " + tileObject + " : tile already occupied at position " + tile.GetPosition());
@@ -178,13 +184,8 @@ public class TileMap : MonoBehaviour
             tile.SetTileObject(tileObject);
             return true;
         }
-        else
-        {
-            print("Can't place object " + tileObject + " : tile is static at position " + tile.GetPosition());
-            return false;
 
-        }
-
+        print("Can't place object " + tileObject + " : tile already occupied at position " + tile.GetPosition());
         return false;
     }
 }
