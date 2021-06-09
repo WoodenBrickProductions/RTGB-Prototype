@@ -260,43 +260,6 @@ public class BasicEnemyController : UnitController
         }
         return false;
     }
-    
-    protected override void ChangeState(States newState)
-    {
-        switch ((int) newState)
-        {
-            case 0:
-            {
-                if (_playerController.GetUnitStatus().CanBeAttacked() && CheckForPlayerInRange())
-                {
-                    _lastPlayerPosition = GetPlayerPosition();
-                    _chasing = true;
-                    _currentState = (int) States.Chasing;
-                    return;
-                }
-                break;
-            }
-            case 1:
-            {
-                _moveTime = 1.0f / movementSpeed;
-                _stoppedMoving = false;
-            }
-                break;
-            case 2:
-            {
-                _attackTime = AttackCooldown;
-            }
-                break;
-            case 3:
-            {
-                _lastPlayerPosition = GetPlayerPosition();
-                _chasing = true;
-            }
-                break;
-        }
-
-        _currentState = (int) newState;
-    }
 
     private Position GetPlayerPosition()
     {
@@ -429,6 +392,73 @@ public class BasicEnemyController : UnitController
         ChangeState(States.Idle);
     }
 
+    private KeyCode GetInputDirection()
+    {
+        Position direction = _targetTile.GetPosition() - _position;
+
+        if (direction.Equals(Position.Up))
+        {
+            return KeyCode.W;
+        }
+        if (direction.Equals(Position.Right))
+        {
+            return KeyCode.D;
+
+        }
+        if (direction.Equals(Position.Down))
+        {
+            return KeyCode.S;
+
+        }
+        if (direction.Equals(Position.Left))
+        {
+            return KeyCode.A;
+        }
+
+        return 0;
+    }
+    
+    protected override void ChangeState(States newState)
+    {
+        switch ((int) newState)
+        {
+            case 0:
+            {
+                IndicatorController.ClearIndicator();
+                if (_playerController.GetUnitStatus().CanBeAttacked() && CheckForPlayerInRange())
+                {
+                    _lastPlayerPosition = GetPlayerPosition();
+                    _chasing = true;
+                    _currentState = (int) States.Chasing;
+                    return;
+                }
+                break;
+            }
+            case 1:
+            {
+                IndicatorController.SetIndicator(GetInputDirection(), IndicatorState.Moving);
+                _moveTime = 1.0f / movementSpeed;
+                _stoppedMoving = false;
+            }
+                break;
+            case 2:
+            {
+                IndicatorController.SetIndicator(GetInputDirection(), IndicatorState.Attacking);
+                _attackTime = AttackCooldown;
+            }
+                break;
+            case 3:
+            {
+                IndicatorController.ClearIndicator();
+                _lastPlayerPosition = GetPlayerPosition();
+                _chasing = true;
+            }
+                break;
+        }
+
+        _currentState = (int) newState;
+    }
+    
     private class Node
     {
         public Position position;

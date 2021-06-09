@@ -42,27 +42,27 @@ public class BoardController : MonoBehaviour
     {
         if (!_tileMap.InitializePosition(tileObject))
         {
-            print("Couldn't place " + tileObject + ", destroying");
-            Destroy(tileObject);
-        }
-    }
-
-    public void InitializePosition(PlayerController player)
-    {
-        if (!_tileMap.InitializePosition(player))
-        {
-            Tile tile = _tileMap.GetValidTile();
-            if (tile.SetTileObject(player))
+            if(tileObject.CompareTag("Player"))
             {
-                player.SetPosition(tile.GetPosition());
-                player.transform.position = tile.transform.position;
-                player.SetOccupiedTile(tile);
-                tile.SetTileObject(player);
+                Tile tile = _tileMap.GetValidTile();
+                if (tile.SetTileObject(tileObject))
+                {
+                    tileObject.SetPosition(tile.GetPosition());
+                    tileObject.transform.position = tile.transform.position;
+                    tileObject.SetOccupiedTile(tile);
+                    tile.SetTileObject(tileObject);
+                }
+                else
+                {
+                    print("Couldn't place " + tileObject + ": didn't get valid tile");
+                }
             }
-            
-            
-            
-            print("Couldn't place " + player + ": didn't get valid tile");
+            else
+            {
+                print("Couldn't place " + tileObject + ", destroying");
+                Destroy(tileObject.gameObject);
+            }
+          
         }
     }
 

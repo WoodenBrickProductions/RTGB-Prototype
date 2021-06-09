@@ -44,12 +44,15 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
     protected float worldMoveStep = 1;
     protected Tile _targetTile;
     private UIController uiController;
+    protected UnitIndicatorController IndicatorController;
+    
     
     protected override void Start()
     {
         base.Start();
         uiController = UIController.uiController;
         unitStats.currentHealth = unitStats.maxHealth;
+        IndicatorController = GetComponentInChildren<UnitIndicatorController>();
     }
 
     protected void MoveToTile(Tile tile, float worldMovementStep)

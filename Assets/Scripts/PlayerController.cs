@@ -14,7 +14,8 @@ public class PlayerController : UnitController
     public static PlayerController _playerController;
     private float _moveTime;
     private bool _stoppedMoving;
-
+    private KeyCode _inputDirection;
+    
     protected void Awake()
     {
         _playerController = this;
@@ -52,10 +53,10 @@ public class PlayerController : UnitController
 
     private void IdleUpdate()
     {
-        KeyCode direction = GetInputDirection();
-        if (direction != 0)
+        _inputDirection = GetInputDirection();
+        if (_inputDirection != 0)
         {
-            Position targetPosition = GetTargetPosition(direction);
+            Position targetPosition = GetTargetPosition(_inputDirection);
             _targetTile = boardController.GetTile(targetPosition);
             if (_targetTile != null && !_targetTile.IsStaticTile())
             {
@@ -125,11 +126,11 @@ public class PlayerController : UnitController
     
     private void AttackingUpdate()
     {
-        KeyCode direction = GetInputDirection();
-        if (direction != 0)
+        _inputDirection = GetInputDirection();
+        if (_inputDirection != 0)
         {
             ;
-            if (!GetTargetPosition(direction).Equals(_targetTile.GetPosition()))
+            if (!GetTargetPosition(_inputDirection).Equals(_targetTile.GetPosition()))
             {
                 ChangeState(States.Idle);
                 return;
@@ -246,12 +247,14 @@ public class PlayerController : UnitController
         {
             case 0:
             {
+                IndicatorController.ClearIndicator();
                 _currentState = 0;
             }
             break;
 
             case 1:
             {
+                IndicatorController.SetIndicator(_inputDirection, IndicatorState.Moving);
                 _moveTime = 1.0f / movementSpeed;
                 _stoppedMoving = false;
                 _currentState = 1;
@@ -259,6 +262,7 @@ public class PlayerController : UnitController
             break;
             case 2:
             {
+                IndicatorController.SetIndicator(_inputDirection, IndicatorState.Attacking);
                 _attackTime = AttackCooldown;
                 _currentState = 2;
             }
