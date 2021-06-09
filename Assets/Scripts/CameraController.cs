@@ -34,6 +34,12 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (cameraFollow == null)
+        {
+            enabled = false;
+            return;
+        }
+            
         // Change to listen for change?
         if (!_targetChangedPosition && transform.position != cameraFollow.transform.position)
         {
@@ -43,6 +49,11 @@ public class CameraController : MonoBehaviour
         if (_targetChangedPosition && Vector3.Distance(transform.position, cameraFollow.transform.position) > 0.001f)
         {
             transform.position = Vector3.MoveTowards(transform.position, cameraFollow.transform.position, worldSpaceStep * movementSpeed * Time.deltaTime);
+        }
+        else
+        {
+            transform.position = cameraFollow.transform.position;
+            _targetChangedPosition = false;
         }
     }
 }

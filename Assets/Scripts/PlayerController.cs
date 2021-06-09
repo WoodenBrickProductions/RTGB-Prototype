@@ -15,7 +15,7 @@ public class PlayerController : UnitController
     private float _moveTime;
     private bool _stoppedMoving;
 
-    private void Awake()
+    protected void Awake()
     {
         _playerController = this;
     }
@@ -104,10 +104,10 @@ public class PlayerController : UnitController
         } else if (!_stoppedMoving)
         {
             _stoppedMoving = true;
-            transform.position = _targetTile.transform.position;
             _occupiedTile.ClearTileObject();
             _occupiedTile = _targetTile;
             _position = _occupiedTile.GetPosition();
+            transform.position = _targetTile.transform.position;
         }
                     
         if(_moveTime <= 0)
@@ -184,8 +184,9 @@ public class PlayerController : UnitController
 
     public override void OnDeath(DamageSource damageSource)
     {
-        // TODO: GameOver
-        base.OnDeath(damageSource);
+        _occupiedTile.ClearTileObject();
+        _occupiedTile = null;
+        gameObject.SetActive(false);
     }
 
     private Position GetTargetPosition(KeyCode keyCode)

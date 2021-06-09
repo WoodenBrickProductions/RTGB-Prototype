@@ -139,10 +139,13 @@ MonoBehaviour:
     attackRange: 1
   AttackCooldown: 2
   _attackTime: 0
-  movementSpeed: 10
+  movementSpeed: 3
   _currentState: 0
   wanderCooldown: 2
-  _wanderTime: 2
+  _wanderTime: 1
   _moveTime: 0
   _usePseudoRandom: 1
-  agroRange: 10
+  agroRange: 7
+  ChasingCooldown: 0.25
+  chasingRange: 10
+  _chasing: 0

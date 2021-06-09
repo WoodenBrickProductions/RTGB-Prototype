@@ -39,6 +39,10 @@ public class Position
 
         Position pos = (Position) obj;
         return (pos.x == x && pos.y == y);
+    }
 
+    public override string ToString()
+    {
+        return "x: " + x + " y: " + y;
     }
 }

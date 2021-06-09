@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,15 +7,17 @@ public class TileObject : MonoBehaviour
 {
     [SerializeField] protected bool staticObject;
     protected Tile _occupiedTile;
-    protected Position _position;
+    protected Position _position = null;
     protected BoardController boardController;
 
-    
     // Start is called before the first frame update
     protected virtual void Start()
     {
         boardController = BoardController._boardController;
-        boardController.InitializePosition(this);
+        if (_position == null)
+        {
+            boardController.InitializePosition(this);
+        }
     }
 
     public void SetPosition(Position position)

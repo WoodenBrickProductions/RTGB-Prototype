@@ -8,18 +8,21 @@ using Random = UnityEngine.Random;
 [ExecuteInEditMode]
 public class TileMap : MonoBehaviour
 {
+    [SerializeField] private EnemySpawner[] enemies;
     [SerializeField] private Tile baseTile;
-    [SerializeField] private EnemyCluster enemyCluster;
+    [SerializeField] private TileObject wallObject;
     [SerializeField] private int xSize = 1;
     [SerializeField] private int ySize = 1;
     [SerializeField] private float worldSpacing = 1;
-    [SerializeField] private float tileSpawnRate = 1;
-    [SerializeField] private float enemySpawnRate = 0.5f;
+    [SerializeField] [Range(0, 1)] private float tileSpawnRate = 1;
+    [SerializeField] [Range(0, 1)] private float enemySpawnRate = 0.5f;
+    [SerializeField] [Range(0, 1)] private float wallSpawning = 0.0f; 
     [SerializeField] private float spawnScaling = 1;
     [SerializeField] private bool generateEnemies = false;
     private Tile[,] tileMatrix;
     private float _perlinSeed;
-
+    private BoardController _boardController;
+    
     private void Start()
     {
         tileMatrix = new Tile[xSize, ySize];
@@ -28,7 +31,8 @@ public class TileMap : MonoBehaviour
 
     public void GenerateTileMap()
     {
-        _perlinSeed = BoardController._boardController.GetGenerationSeed();
+        _boardController = BoardController._boardController;
+        _perlinSeed = _boardController.GetGenerationSeed();
         tileMatrix = new Tile[xSize, ySize];
         for (int i = 0; i < xSize; i++)
         {
@@ -43,9 +47,13 @@ public class TileMap : MonoBehaviour
                         Quaternion.identity,
                         transform);
                     tileMatrix[i, j].SetPosition(new Position(i, j));
-                    if (generateEnemies && spawnValue <= enemySpawnRate * tileSpawnRate)
+                    if (spawnValue > tileSpawnRate * (1 - wallSpawning))
                     {
-                        // TODO: Add enemies to spawn
+                        TileObject wall = Instantiate(wallObject,
+                            transform.position + new Vector3(i * worldSpacing, 0, j * worldSpacing),
+                            Quaternion.identity, 
+                            transform);
+                        InitializePosition(wall);
                     }
                 }
                 else
@@ -58,6 +66,40 @@ public class TileMap : MonoBehaviour
                     tileMatrix[i, j].SetStaticTile(true);
                     tileMatrix[i, j].SetPosition(new Position(i, j));
                 }
+            }
+        }
+    }
+
+    public void SpawnEnemies()
+    {
+        if (generateEnemies)
+        {
+            for (int i = 0; i < xSize; i++)
+            {
+                for (int j = 0; j < ySize; j++)
+                {
+                    float spawnValue = Mathf.PerlinNoise((i + _perlinSeed) * spawnScaling, (j + _perlinSeed) * spawnScaling);
+                    if (tileMatrix[i, j].IsStaticTile() && tileMatrix[i, j].GetOccupiedTileObject() != null)
+                    {
+                    }
+                    else
+                    {
+                        if (spawnValue <= enemySpawnRate)
+                        {
+                            foreach (EnemySpawner enemySpawner in enemies)
+                            {
+                                if (Random.value <= enemySpawner.spawnRate)
+                                {
+                                    TileObject enemy = Instantiate(enemySpawner.enemy,
+                                        transform.position + new Vector3(i * worldSpacing, 0, j * worldSpacing),
+                                        Quaternion.identity, 
+                                        transform);
+                                    InitializePosition(enemy);
+                                }
+                            }
+                        }
+                    }
+                }  
             }
         }
     }
@@ -80,7 +122,7 @@ public class TileMap : MonoBehaviour
         return worldSpacing;
     }
 
-    public Position GetValidTile()
+    public Tile GetValidTile()
     {
         int x = (int)(Random.value * xSize);
         int y = (int)(Random.value * ySize);
@@ -92,7 +134,7 @@ public class TileMap : MonoBehaviour
                 Tile tile = tileMatrix[i, j];
                 if (!tile.IsStaticTile() && tile.GetOccupiedTileObject() == null)
                 {
-                    return tileMatrix[i, j].GetPosition();
+                    return tileMatrix[i, j];
                 }
             }
         }
@@ -110,5 +152,41 @@ public class TileMap : MonoBehaviour
         {
             return null;
         }
+    }
+
+    public bool InitializePosition(TileObject tileObject)
+    {
+        Vector3 worldPosition = tileObject.transform.position;
+        Position position = new Position((int) (worldPosition.x / worldSpacing), (int) (worldPosition.z / worldSpacing));
+        Tile tile = GetTile(position);
+
+        if (tile == null)
+        {
+            print("Can't place object " + tileObject + " : object outside tilemap");
+            return false;
+        }
+
+        if (tile.GetOccupiedTileObject() != null)
+        {
+            print("Can't place object " + tileObject + " : tile already occupied at position " + tile.GetPosition());
+            return false;
+        }
+        
+        if (tile.SetTileObject(tileObject))
+        {
+            tileObject.SetPosition(position);
+            tileObject.transform.position = tile.transform.position;
+            tileObject.SetOccupiedTile(tile);
+            tile.SetTileObject(tileObject);
+            return true;
+        }
+        else
+        {
+            print("Can't place object " + tileObject + " : tile is static at position " + tile.GetPosition());
+            return false;
+
+        }
+
+        return false;
     }
 }

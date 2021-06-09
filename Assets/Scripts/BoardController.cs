@@ -24,6 +24,7 @@ public class BoardController : MonoBehaviour
         _perlinSeed = Random.value * 1000;
         worldTileSpacing = _tileMap.GetWorldTileSpacing();
         _tileMap.GenerateTileMap();
+        _tileMap.SpawnEnemies();
     }
 
     // Update is called once per frame
@@ -39,40 +40,30 @@ public class BoardController : MonoBehaviour
 
     public void InitializePosition(TileObject tileObject)
     {
-        Vector3 worldPosition = tileObject.transform.position;
-        Position position = new Position((int) (worldPosition.x / worldTileSpacing), (int) (worldPosition.z / worldTileSpacing));
-        Tile tile = GetTile(position);
+        if (!_tileMap.InitializePosition(tileObject))
+        {
+            print("Couldn't place " + tileObject + ", destroying");
+            Destroy(tileObject);
+        }
+    }
 
-        if (tile == null)
+    public void InitializePosition(PlayerController player)
+    {
+        if (!_tileMap.InitializePosition(player))
         {
-            print("Can't place object " + tileObject + " : object outside tilemap");
-            Destroy(tileObject.gameObject);
-            return;
+            Tile tile = _tileMap.GetValidTile();
+            if (tile.SetTileObject(player))
+            {
+                player.SetPosition(tile.GetPosition());
+                player.transform.position = tile.transform.position;
+                player.SetOccupiedTile(tile);
+                tile.SetTileObject(player);
+            }
+            
+            
+            
+            print("Couldn't place " + player + ": didn't get valid tile");
         }
-
-        if (tile.GetOccupiedTileObject() != null)
-        {
-            print("Can't place object " + tileObject + " : tile already occupied");
-            Destroy(tileObject.gameObject);
-            return;
-        }
-        
-        if (tile.SetTileObject(tileObject))
-        {
-            tileObject.SetPosition(position);
-            tileObject.transform.position = new Vector3(position.x * worldTileSpacing, 0, position.y * worldTileSpacing);
-            tileObject.SetOccupiedTile(tile);
-        }
-        else
-        {
-            print("Can't place object " + tileObject + " : tile is static");
-            position = _tileMap.GetValidTile();
-            tileObject.SetPosition(position);
-            tileObject.transform.position = new Vector3(position.x * worldTileSpacing, 0, position.y * worldTileSpacing);
-            tileObject.SetOccupiedTile(tile);
-                        
-        }
-
     }
 
     public Tile GetTile(Position position)

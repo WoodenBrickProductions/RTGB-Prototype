@@ -77,7 +77,6 @@ public class BasicEnemyController : UnitController
 
     private void IdleUpdate()
     {
-        print("InsideIdle");
         // TODO: Can it be chasing and still end up here?
         if (!_chasing && _wanderTime <= 0)
         {
@@ -302,9 +301,16 @@ public class BasicEnemyController : UnitController
         return _playerController.GetOccupiedTile().GetPosition();
     }
 
+    // TODO: Change all range checks to be one function, where I pass in range value;
+    
     private bool IsPlayerInAttackRange()
     {
-        _lastPlayerPosition = _playerController.GetOccupiedTile().GetPosition();
+        Tile playerTile = _playerController.GetOccupiedTile();
+        if (playerTile == null)
+        {
+            return false;
+        }
+        _lastPlayerPosition = playerTile.GetPosition();
         int distance = Position.Distance(_lastPlayerPosition, _position);
         if (distance <= unitStats.attackRange)
         {
@@ -317,7 +323,12 @@ public class BasicEnemyController : UnitController
 
     private bool IsPlayerInChasingRange()
     {
-        _lastPlayerPosition = _playerController.GetOccupiedTile().GetPosition();
+        Tile playerTile = _playerController.GetOccupiedTile();
+        if (playerTile == null)
+        {
+            return false;
+        }
+        _lastPlayerPosition = playerTile.GetPosition();
         int distance = Position.Distance(_lastPlayerPosition, _position);
         if (distance <= chasingRange)
         {
@@ -330,7 +341,16 @@ public class BasicEnemyController : UnitController
     
     private bool CheckForPlayerInRange()
     {
-        _lastPlayerPosition = _playerController.GetOccupiedTile().GetPosition();
+        Tile playerTile = _playerController.GetOccupiedTile();
+        if (playerTile == null)
+        {
+            return false;
+        }
+        _lastPlayerPosition = playerTile.GetPosition();
+        if (_lastPlayerPosition == null)
+        {
+            return false;
+        }
         int distance = Position.Distance(_lastPlayerPosition, _position);
         if(distance <= agroRange)
         {
@@ -398,6 +418,13 @@ public class BasicEnemyController : UnitController
         }
 
         return false;
+    }
+
+    public override void OnTargetObjectKilled(IAttackable target)
+    {
+        base.OnTargetObjectKilled(target);
+        _chasing = false;
+        ChangeState(States.Idle);
     }
 
     private class Node
