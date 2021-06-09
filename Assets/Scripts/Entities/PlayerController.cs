@@ -8,11 +8,7 @@ using UnityEngine;
 // ADD STATES ENUM, MOVE THE BLOODY PLAYER
 public class PlayerController : UnitController
 {
-    // private List<IState> _states;
-
-    
     public static PlayerController _playerController;
-    private float _moveTime;
     private bool _stoppedMoving;
     private KeyCode _inputDirection;
     
@@ -21,21 +17,16 @@ public class PlayerController : UnitController
         _playerController = this;
     }
 
-    // Start is called before the first frame update
     protected override void Start()
     {
         base.Start();
         staticObject = false;
-        // _states = new List<IState>();
-        // _states.Add(new IdleState());
-        // _states.Add(new MovingState());
-        worldMoveStep = boardController.GetWorldTileSpacing();
+        WorldMoveStep = boardController.GetWorldTileSpacing();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        switch (_currentState)
+        switch (currentState)
         {
             case 0: // IDLE
                 IdleUpdate();
@@ -46,9 +37,9 @@ public class PlayerController : UnitController
             case 2: // ATTACKING
                 AttackingUpdate();
                 break;
+            case 3: // DISABLED
+                break;
         }
-
-
     }
 
     private void IdleUpdate()
@@ -57,10 +48,10 @@ public class PlayerController : UnitController
         if (_inputDirection != 0)
         {
             Position targetPosition = GetTargetPosition(_inputDirection);
-            _targetTile = boardController.GetTile(targetPosition);
-            if (_targetTile != null && !_targetTile.IsStaticTile())
+            TargetTile = boardController.GetTile(targetPosition);
+            if (TargetTile != null && !TargetTile.IsStaticTile())
             {
-                TileObject occupiedTileObject = _targetTile.GetOccupiedTileObject();
+                TileObject occupiedTileObject = TargetTile.GetOccupiedTileObject();
                 if (occupiedTileObject != null)
                 {
                     if (occupiedTileObject.IsStaticObject())
@@ -69,7 +60,7 @@ public class PlayerController : UnitController
                     }
                     else
                     {
-                        if (_attackTime <= 0 && unitStatus.CanAttack() && occupiedTileObject.CompareTag("Enemy"))
+                        if (attackTime <= 0 && unitStatus.CanAttack() && occupiedTileObject.CompareTag("Enemy"))
                         {
                             UnitController unitController = (UnitController) occupiedTileObject;
                             if (unitController.GetUnitStatus().CanBeAttacked())
@@ -82,16 +73,16 @@ public class PlayerController : UnitController
                 }
                 else
                 {
-                    if (_targetTile.SetTileObject(this))
+                    if (TargetTile.SetTileObject(this))
                     {
                         ChangeState(States.Moving);
                     }
                 }
             }
         }
-        if (_attackTime > 0)
+        if (attackTime > 0)
         {
-            _attackTime -= Time.deltaTime;
+            attackTime -= Time.deltaTime;
         }
         
     }
@@ -99,28 +90,28 @@ public class PlayerController : UnitController
     private void MovingUpdate()
     {
         // TODO change to constant
-        if (_moveTime >= 0.5 / movementSpeed)
+        if (moveTime >= 0.5 / movementSpeed)
         {
-            MoveToTile(_targetTile, worldMoveStep * 2);
+            MoveToTile(TargetTile, WorldMoveStep * 2);
         } else if (!_stoppedMoving)
         {
             _stoppedMoving = true;
             _occupiedTile.ClearTileObject();
-            _occupiedTile = _targetTile;
+            _occupiedTile = TargetTile;
             _position = _occupiedTile.GetPosition();
-            transform.position = _targetTile.transform.position;
+            transform.position = TargetTile.transform.position;
         }
                     
-        if(_moveTime <= 0)
+        if(moveTime <= 0)
         {
             ChangeState(States.Idle);
         }
                     
-        _moveTime -= Time.deltaTime;
+        moveTime -= Time.deltaTime;
         
-        if (_attackTime > 0)
+        if (attackTime > 0)
         {
-            _attackTime -= Time.deltaTime;
+            attackTime -= Time.deltaTime;
         }
     }
     
@@ -130,16 +121,16 @@ public class PlayerController : UnitController
         if (_inputDirection != 0)
         {
             ;
-            if (!GetTargetPosition(_inputDirection).Equals(_targetTile.GetPosition()))
+            if (!GetTargetPosition(_inputDirection).Equals(TargetTile.GetPosition()))
             {
                 ChangeState(States.Idle);
                 return;
             }
         }
         
-        if (_attackTime <= 0)
+        if (attackTime <= 0)
         {
-            TileObject occupiedTileObject = _targetTile.GetOccupiedTileObject();
+            TileObject occupiedTileObject = TargetTile.GetOccupiedTileObject();
             if (occupiedTileObject != null && occupiedTileObject.CompareTag("Enemy"))
             {
                 UnitController unitController = (UnitController) occupiedTileObject;
@@ -147,7 +138,7 @@ public class PlayerController : UnitController
                 {
                     if (Attack(unitController))
                     {
-                        _attackTime = AttackCooldown;
+                        attackTime = attackCooldown;
                     }
                     else
                     {
@@ -168,7 +159,7 @@ public class PlayerController : UnitController
         }
         else
         {
-            _attackTime -= Time.deltaTime;
+            attackTime -= Time.deltaTime;
         }
     }
 
@@ -248,23 +239,23 @@ public class PlayerController : UnitController
             case 0:
             {
                 IndicatorController.ClearIndicator();
-                _currentState = 0;
+                currentState = 0;
             }
             break;
 
             case 1:
             {
                 IndicatorController.SetIndicator(_inputDirection, IndicatorState.Moving);
-                _moveTime = 1.0f / movementSpeed;
+                moveTime = 1.0f / movementSpeed;
                 _stoppedMoving = false;
-                _currentState = 1;
+                currentState = 1;
             }
             break;
             case 2:
             {
                 IndicatorController.SetIndicator(_inputDirection, IndicatorState.Attacking);
-                _attackTime = AttackCooldown;
-                _currentState = 2;
+                attackTime = attackCooldown;
+                currentState = 2;
             }
             break;
         }

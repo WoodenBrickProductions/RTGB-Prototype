@@ -585,15 +585,17 @@ MonoBehaviour:
     experience: 1
     level: 0
     attackRange: 1
-  AttackCooldown: 2
-  _attackTime: 0
+    attackSpeed: 1
   movementSpeed: 3
-  _currentState: 0
+  moveTime: 0
+  attackTime: 0
+  currentState: 0
+  attackCooldown: 1
   wanderCooldown: 2
-  _wanderTime: 1
-  _moveTime: 0
-  _usePseudoRandom: 1
   agroRange: 7
-  ChasingCooldown: 0.25
   chasingRange: 10
+  chasingCooldown: 0.25
+  usePseudoRandom: 0
+  wanderTime: 0
+  chasingTime: 0
   _chasing: 0

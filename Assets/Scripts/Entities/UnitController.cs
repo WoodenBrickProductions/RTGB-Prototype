@@ -13,45 +13,32 @@ public enum States
     Chasing = 4
 }
 
-[Serializable]
-public struct Status
-{
- public bool movable;
- public bool attackable;
- public bool effectable;
- public bool interactable;
- public bool canAttack;
-}
-
-[Serializable]
-public struct Stats
-{
-    public float maxHealth;
-    public float currentHealth;
-    public float attackDamage;
-}
-
 public class UnitController : TileObject, IAttackable, IDealsDamage
 {
     [SerializeField] protected UnitStatus unitStatus;
     [SerializeField] protected UnitStats unitStats;
 
-    [SerializeField] protected float AttackCooldown; // TODO: Change to attack speed?
-    [SerializeField] protected float _attackTime;
-
     [SerializeField] protected float movementSpeed = 1;
-    [SerializeField] protected int _currentState = 0;
-    protected float worldMoveStep = 1;
-    protected Tile _targetTile;
-    private UIController uiController;
+    
+    [Header("Debuging")]
+    [SerializeField] protected float moveTime; // DEBUG-ONLY SERIALIZE
+    [SerializeField] protected float attackTime; // DEBUG-ONLY SERIALIZE
+    [SerializeField] protected int currentState = 0; // DEBUG-ONLY SERIALIZE
+    [SerializeField] protected float attackCooldown; // TODO: Change to attack speed?
+    
+    
+    protected float WorldMoveStep = 1;
+    protected Tile TargetTile;
+    private UIController _uiController;
     protected UnitIndicatorController IndicatorController;
     
     
     protected override void Start()
     {
         base.Start();
-        uiController = UIController.uiController;
+        _uiController = UIController.uiController;
         unitStats.currentHealth = unitStats.maxHealth;
+        attackCooldown = 1.0f / unitStats.attackSpeed;
         IndicatorController = GetComponentInChildren<UnitIndicatorController>();
     }
 
@@ -62,16 +49,6 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
             transform.position,
             tile.transform.position,
             movementSpeed * worldMovementStep * Time.deltaTime);
-    }
-
-    public float GetMovementSpeed()
-    {
-        return movementSpeed;
-    }
-
-    public float GetCurrentHealth()
-    {
-        return unitStats.currentHealth;
     }
 
     private void SetHealth(int healthChange)
@@ -89,10 +66,12 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
         {
             unitStats.currentHealth += healthChange;
         }
-        uiController.SetHealth(this);
+        _uiController.SetHealth(this);
     }
 
-    // Called when health reaches 0 while calling SetHealth
+    /**
+     * Called when currentHealth reaches zero, before calling OnDeath.
+     */
     protected virtual void OnHealthReachesZero()
     {
         unitStatus.attackable = false;
@@ -100,6 +79,9 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
 
     }
     
+    /**
+     * Called when this unit is being attacked by a damageSource.
+     */
     public virtual bool GetAttacked(DamageSource damageSource)
     {
         if (unitStatus.CanBeAttacked())
@@ -115,27 +97,46 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
         return false;
     }
     
+    /**
+     * Called when this unit attacks another unit.
+     */
     public virtual bool Attack(IAttackable target)
     {
         return target.GetAttacked(new DamageSource(this, DamageType.Attack, -unitStats.attackDamage));
     }
 
+    /**
+     * Called when this unit kills another unit.
+     */
     public virtual void OnTargetObjectKilled(IAttackable target)
     {
         print("I: " + name + " killed " + target);
     }
 
+    protected virtual void ChangeState(States newState)
+    {
+        currentState = (int) newState;
+    }
+    
+    /**
+     * Called when unit's currentHealth reaches 0.
+     */
     public virtual void OnDeath(DamageSource damageSource)
     {
-        uiController.OnEnemyKilled(this);
+        _uiController.OnEnemyKilled(this);
         _occupiedTile.ClearTileObject();
         Destroy(gameObject);
         gameObject.SetActive(false);
     }
-
+    
     public GameObject GetGameObject()
     {
         return gameObject;
+    }
+
+    public float GetMovementSpeed()
+    {
+        return movementSpeed;
     }
 
     public UnitStatus GetUnitStatus()
@@ -149,13 +150,11 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
         UnitStats stats = new UnitStats(unitStats);
         return stats;
     }
-
-    protected virtual void ChangeState(States newState)
+    
+    protected virtual void OnValidate()
     {
-        _currentState = (int) newState;
+        attackCooldown = 1.0f / unitStats.attackSpeed;
     }
-
-
 }
 
 

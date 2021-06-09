@@ -7,35 +7,36 @@ using Random = UnityEngine.Random;
 
 public class BasicEnemyController : UnitController
 {
+    [Header("AI stats")]
     [SerializeField] private float wanderCooldown;
-    [SerializeField] private float _wanderTime;
-    
-    [SerializeField] private float _moveTime;
-
-    [SerializeField] private bool _usePseudoRandom = false;
-
     [SerializeField] private int agroRange = 1;
-
-    [SerializeField] private float ChasingCooldown = 0.25f;
     [SerializeField] private int chasingRange = 100;
+    [SerializeField] private float chasingCooldown = 0.25f;
+    [SerializeField] private bool usePseudoRandom = false;
+    
+    
+    [Header("Debuging")]
+    [SerializeField] private float wanderTime;
+    [SerializeField] private float chasingTime;
+    [SerializeField] private bool chasing = false;
+    
     private PlayerController _playerController;
     private PseudoRandomNumberGenerator _pseudoRandomNumberGenerator;
-    private bool _stoppedMoving;
-    private List<Position> _possibleMoves;
-    private Position _lastPlayerPosition;
-    private float chasingTime;
     
-    [SerializeField] private bool _chasing = false;
+    private List<Position> _possibleMoves;
+    private bool _stoppedMoving;
+    private Position _lastPlayerPosition;
+    
     
     // Start is called before the first frame update
 
     protected override void Start()
     {
         tag = "Enemy";
-        _wanderTime = _wanderTime + Random.value;
+        wanderTime = wanderTime + Random.value;
         _pseudoRandomNumberGenerator = new PseudoRandomNumberGenerator(4);
         base.Start();
-        _attackTime = AttackCooldown;
+        attackTime = attackCooldown;
         _possibleMoves = new List<Position>();
         _possibleMoves.Add(Position.Up);
         _possibleMoves.Add(Position.Right);
@@ -44,10 +45,9 @@ public class BasicEnemyController : UnitController
         _playerController = PlayerController._playerController;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        switch (_currentState)
+        switch (currentState)
         {
             case 0: // IDLE
                 IdleUpdate();
@@ -65,9 +65,9 @@ public class BasicEnemyController : UnitController
                 break;
         }
 
-        if (_attackTime > 0)
+        if (attackTime > 0)
         {
-            _attackTime -= Time.deltaTime;
+            attackTime -= Time.deltaTime;
         }
         
         if (chasingTime > 0)
@@ -78,59 +78,60 @@ public class BasicEnemyController : UnitController
 
     private void IdleUpdate()
     {
-        // TODO: Can it be chasing and still end up here?
-        if (unitStatus.canAttack && !_chasing && _wanderTime <= 0)
+        if (!chasing && wanderTime <= 0)
         {
+            if (_playerController.GetUnitStatus().CanBeAttacked() && IsPlayerInRange(agroRange))
+            {
+                ChangeState(States.Chasing);
+                return;
+            }
             if (Wander())
             {
-                if (_targetTile.SetTileObject(this))
+                if (TargetTile.SetTileObject(this))
                 {
                     ChangeState(States.Moving);
                 }
             }
-            _wanderTime = wanderCooldown;
+            wanderTime = wanderCooldown;
         }
         else
         {
             float time = Time.deltaTime;
-            if (_wanderTime > 0)
+            if (wanderTime > 0)
             {
-                _wanderTime -= time;
+                wanderTime -= time;
             }
-            if (_moveTime > 0)
+            if (moveTime > 0)
             {
-                _moveTime -= time;
+                moveTime -= time;
             }
         }
     }
 
     private void MovingUpdate()
     {
-        if (_moveTime >= 0.5 / movementSpeed)
+        if (moveTime >= 0.5 / movementSpeed)
         {
-            MoveToTile(_targetTile, worldMoveStep * 2);
+            MoveToTile(TargetTile, WorldMoveStep * 2);
         } else if (!_stoppedMoving)
         {
             _stoppedMoving = true;
-            transform.position = _targetTile.transform.position;
+            transform.position = TargetTile.transform.position;
             _occupiedTile.ClearTileObject();
-            _occupiedTile = _targetTile;
+            _occupiedTile = TargetTile;
             _position = _occupiedTile.GetPosition();
-        }else if(_moveTime <= 0)
+        }else if(moveTime <= 0)
         {
-            ChangeState(_chasing ? States.Chasing : States.Idle);
+            ChangeState(chasing ? States.Chasing : States.Idle);
         }
-                    
-
-                    
-        _moveTime -= Time.deltaTime;
+        moveTime -= Time.deltaTime;
     }
 
     private void AttackingUpdate()
     {
-        if (_attackTime <= 0)
+        if (attackTime <= 0)
         {
-            TileObject occupiedTileObject = _targetTile.GetOccupiedTileObject();
+            TileObject occupiedTileObject = TargetTile.GetOccupiedTileObject();
             if (occupiedTileObject != null && occupiedTileObject.CompareTag("Player"))
             {
                 UnitController unitController = (UnitController) occupiedTileObject;
@@ -138,17 +139,18 @@ public class BasicEnemyController : UnitController
                 {
                     if (Attack(unitController))
                     {
-                        _attackTime = AttackCooldown;
+                        attackTime = attackCooldown;
                     }
                     else
                     {
                         //Enemy unit killed
+                        chasing = false;
                         ChangeState(States.Idle);
                     }
                 }
                 else
                 {
-                    _chasing = false;
+                    chasing = false;
                     ChangeState(States.Idle);
                 }
 
@@ -158,117 +160,114 @@ public class BasicEnemyController : UnitController
                 ChangeState(States.Chasing);
             }
         }
+        // attackingTime decrement is handled in Update
     }
 
     private void ChasingUpdate()
     {
-        if (_chasing)
+        if (chasingTime <= 0)
         {
-            if (IsPlayerInAttackRange())
+            if (_playerController.GetUnitStatus().CanBeAttacked() && chasing)
             {
-                ChangeState(States.Attacking);
-            }                        
-            else
-            {
-                if (chasingTime <= 0)
+                if (IsPlayerInRange(unitStats.attackRange))
+                {
+                    TargetTile = boardController.GetTile(_lastPlayerPosition);
+                    ChangeState(States.Attacking);
+                } else if (IsPlayerInRange(chasingRange))
                 {
                     Chase();
                 }
+                else
+                {
+                    chasing = false;
+                    ChangeState(States.Idle);
+                }
+            }
+            else
+            {
+                chasing = false;
+                ChangeState(States.Idle);
             }
         }
-        else
-        {
-            ChangeState(States.Idle);
-        }
-
-
+        // chasingTime decrement is handled in Update.
     }
 
     private void Chase()
     {
         if (FindPathToPlayer())
         {
-            if (_targetTile.SetTileObject(this))
+            if (TargetTile.SetTileObject(this))
             {
                 ChangeState(States.Moving);
             }
         }
         else
         {
-            if (IsPlayerInChasingRange())
-            {
-                chasingTime = ChasingCooldown;
-            }
-            else
-            {
-                _chasing = false;
-                ChangeState(States.Idle);
-                chasingTime = ChasingCooldown;
-            }
+                chasingTime = chasingCooldown;
         }
     }
-    
-    public bool IsChasing()
-    {
-        return _chasing;
-    }
 
-    // Set next possible tile to wander to
+    // Set next possible tile to wander to, set's TargetTile
     private bool Wander()
     {
         int randomValue;
-        if (_usePseudoRandom)
+        if (usePseudoRandom)
         {
             randomValue = _pseudoRandomNumberGenerator.GetPseudoRandomNumber();
-            print("Pseudo randomed: " + randomValue);
         }
         else
         {
             randomValue = (int) (Random.value * 4);
-            print("Normal randomed: " + randomValue);
         }
         
         int direction = randomValue;
         for(int i = 0; i < 4; i++)
         {
-            _targetTile = boardController.GetTile(
+            TargetTile = boardController.GetTile(
                 _position + _possibleMoves[(direction + i) % 4]);
-            if (_targetTile != null && !_targetTile.IsStaticTile())
+            if (TargetTile != null && !TargetTile.IsStaticTile())
             {
-                TileObject occupiedTileObject = _targetTile.GetOccupiedTileObject();
+                TileObject occupiedTileObject = TargetTile.GetOccupiedTileObject();
                 if (occupiedTileObject != null)
                 {
                     if (occupiedTileObject.IsStaticObject())
                     {
-                                
-                    }
-                    else
-                    {
-                        if (occupiedTileObject.CompareTag("Player"))
-                        {
-                            ChangeState(States.Chasing);
-                            return false;
-                        }
+                        // Enemy encountered static object.
                     }
                 }
                 else
                 {
                     return true;
-
                 }
             }
         }
         return false;
     }
 
-    private Position GetPlayerPosition()
-    {
-        return _playerController.GetOccupiedTile().GetPosition();
-    }
-
     // TODO: Change all range checks to be one function, where I pass in range value;
     
-    private bool IsPlayerInAttackRange()
+    // private bool IsPlayerInAttackRange()
+    // {
+    //     Tile playerTile = _playerController.GetOccupiedTile();
+    //     if (playerTile == null)
+    //     {
+    //         return false;
+    //     }
+    //     _lastPlayerPosition = playerTile.GetPosition();
+    //     int distance = Position.Distance(_lastPlayerPosition, _position);
+    //     if (distance <= unitStats.attackRange)
+    //     {
+    //         TargetTile = boardController.GetTile(_lastPlayerPosition);
+    //         return true;
+    //     }
+    //
+    //     return false;
+    // }
+
+    /**
+     * Checks if player is within range (grid-based), sets _lastPlayerPosition.
+     */
+    private bool IsPlayerInRange(int range)
     {
         Tile playerTile = _playerController.GetOccupiedTile();
         if (playerTile == null)
@@ -277,54 +276,58 @@ public class BasicEnemyController : UnitController
         }
         _lastPlayerPosition = playerTile.GetPosition();
         int distance = Position.Distance(_lastPlayerPosition, _position);
-        if (distance <= unitStats.attackRange)
+        if (distance <= range)
         {
-            _targetTile = boardController.GetTile(_lastPlayerPosition);
-            return true;
-        }
-
-        return false;
-    }
-
-    private bool IsPlayerInChasingRange()
-    {
-        Tile playerTile = _playerController.GetOccupiedTile();
-        if (playerTile == null)
-        {
-            return false;
-        }
-        _lastPlayerPosition = playerTile.GetPosition();
-        int distance = Position.Distance(_lastPlayerPosition, _position);
-        if (distance <= chasingRange)
-        {
-            _targetTile = boardController.GetTile(_lastPlayerPosition);
+            // TargetTile = boardController.GetTile(_lastPlayerPosition);
             return true;
         }
 
         return false;
     }
     
-    private bool CheckForPlayerInRange()
-    {
-        Tile playerTile = _playerController.GetOccupiedTile();
-        if (playerTile == null)
-        {
-            return false;
-        }
-        _lastPlayerPosition = playerTile.GetPosition();
-        if (_lastPlayerPosition == null)
-        {
-            return false;
-        }
-        int distance = Position.Distance(_lastPlayerPosition, _position);
-        if(distance <= agroRange)
-        {
-            return true;
-        }
+    // private bool IsPlayerInChasingRange()
+    // {
+    //     Tile playerTile = _playerController.GetOccupiedTile();
+    //     if (playerTile == null)
+    //     {
+    //         return false;
+    //     }
+    //     _lastPlayerPosition = playerTile.GetPosition();
+    //     int distance = Position.Distance(_lastPlayerPosition, _position);
+    //     if (distance <= chasingRange)
+    //     {
+    //         TargetTile = boardController.GetTile(_lastPlayerPosition);
+    //         return true;
+    //     }
+    //
+    //     return false;
+    // }
+    
+    // private bool CheckForPlayerInRange()
+    // {
+    //     Tile playerTile = _playerController.GetOccupiedTile();
+    //     if (playerTile == null)
+    //     {
+    //         return false;
+    //     }
+    //     _lastPlayerPosition = playerTile.GetPosition();
+    //     if (_lastPlayerPosition == null)
+    //     {
+    //         return false;
+    //     }
+    //     int distance = Position.Distance(_lastPlayerPosition, _position);
+    //     if(distance <= agroRange)
+    //     {
+    //         return true;
+    //     }
+    //
+    //     return false;
+    // }
 
-        return false;
-    }
-
+    /**
+     * Finds path to player, returns true if there is path to player or player is within chaseRange.
+     * If path is found, set's targetTile.
+     */
     private bool FindPathToPlayer()
     {
         Node start = new Node();
@@ -355,7 +358,7 @@ public class BasicEnemyController : UnitController
                     //Found Node
                     result = current.history;
                     result.Add(current.position);
-                    _targetTile = boardController.GetTile(result[1]);
+                    TargetTile = boardController.GetTile(result[1]);
                     return true;
                 }
                 else
@@ -388,13 +391,13 @@ public class BasicEnemyController : UnitController
     public override void OnTargetObjectKilled(IAttackable target)
     {
         base.OnTargetObjectKilled(target);
-        _chasing = false;
+        chasing = false;
         ChangeState(States.Idle);
     }
 
     private KeyCode GetInputDirection()
     {
-        Position direction = _targetTile.GetPosition() - _position;
+        Position direction = TargetTile.GetPosition() - _position;
 
         if (direction.Equals(Position.Up))
         {
@@ -422,41 +425,43 @@ public class BasicEnemyController : UnitController
     {
         switch ((int) newState)
         {
-            case 0:
+            case 0: // IDLE
             {
                 IndicatorController.ClearIndicator();
-                if (_playerController.GetUnitStatus().CanBeAttacked() && CheckForPlayerInRange())
+                if (_playerController.GetUnitStatus().CanBeAttacked() && IsPlayerInRange(agroRange))
                 {
-                    _lastPlayerPosition = GetPlayerPosition();
-                    _chasing = true;
-                    _currentState = (int) States.Chasing;
+                    ChangeState(States.Chasing);
                     return;
                 }
                 break;
             }
-            case 1:
+            case 1: // MOVING
             {
                 IndicatorController.SetIndicator(GetInputDirection(), IndicatorState.Moving);
-                _moveTime = 1.0f / movementSpeed;
+                moveTime = 1.0f / movementSpeed;
                 _stoppedMoving = false;
             }
                 break;
-            case 2:
+            case 2: // ATTACKING
             {
                 IndicatorController.SetIndicator(GetInputDirection(), IndicatorState.Attacking);
-                _attackTime = AttackCooldown;
+                attackTime = attackCooldown;
             }
                 break;
-            case 3:
+            case 3: // DISABLED
+            {
+                
+            }
+                break;
+            case 4: // CHASING
             {
                 IndicatorController.ClearIndicator();
-                _lastPlayerPosition = GetPlayerPosition();
-                _chasing = true;
+                chasing = true;
             }
                 break;
         }
 
-        _currentState = (int) newState;
+        currentState = (int) newState;
     }
     
     private class Node

@@ -1389,7 +1389,17 @@ PrefabInstance:
     - target: {fileID: 5514202020488043205, guid: 00645456cc01a974faa161d33a931b73,
         type: 3}
       propertyPath: movementSpeed
-      value: 15
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5514202020488043205, guid: 00645456cc01a974faa161d33a931b73,
+        type: 3}
+      propertyPath: unitStats.attackSpeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5514202020488043205, guid: 00645456cc01a974faa161d33a931b73,
+        type: 3}
+      propertyPath: attackCooldown
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5514202020488043207, guid: 00645456cc01a974faa161d33a931b73,
         type: 3}
