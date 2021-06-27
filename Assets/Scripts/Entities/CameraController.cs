@@ -8,7 +8,6 @@ public class CameraController : MonoBehaviour
     public static CameraController _cameraController;
     [SerializeField] private UnitController cameraFollow = null;
     [SerializeField] private float movementSpeed = 1;
-    private Camera mainCamera;
     private bool _targetChangedPosition = false;
     private float worldSpaceStep;
 
@@ -26,7 +25,6 @@ public class CameraController : MonoBehaviour
             cameraFollow = PlayerController._playerController;
         }
         movementSpeed = cameraFollow.GetMovementSpeed();
-        mainCamera = Camera.main;
         worldSpaceStep = BoardController._boardController.GetWorldTileSpacing();
         transform.position = cameraFollow.transform.position;
     }
@@ -55,5 +53,10 @@ public class CameraController : MonoBehaviour
             transform.position = cameraFollow.transform.position;
             _targetChangedPosition = false;
         }
+    }
+
+    public void SetSpeed(float speed)
+    {
+        movementSpeed = speed;
     }
 }

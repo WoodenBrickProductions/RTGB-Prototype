@@ -8,7 +8,6 @@ public class BoardController : MonoBehaviour
 {
     private float worldTileSpacing;
     public static BoardController _boardController;
-    private float _perlinSeed;
     [SerializeField] private TileMap _tileMap; 
     
     
@@ -21,7 +20,6 @@ public class BoardController : MonoBehaviour
 
     void Start()
     {
-        _perlinSeed = Random.value * 1000;
         worldTileSpacing = _tileMap.GetWorldTileSpacing();
         _tileMap.GenerateTileMap();
         _tileMap.SpawnEnemies();
@@ -68,10 +66,5 @@ public class BoardController : MonoBehaviour
     public Tile GetTile(Position position)
     {
         return _tileMap.GetTile(position);
-    }
-
-    public float GetGenerationSeed()
-    {
-        return _perlinSeed;
     }
 }

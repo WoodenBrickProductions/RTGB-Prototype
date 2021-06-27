@@ -2,10 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design.Serialization;
+using Unity.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-[ExecuteInEditMode]
 public class TileMap : MonoBehaviour
 {
     [SerializeField] private EnemySpawner[] enemies;
@@ -16,29 +16,28 @@ public class TileMap : MonoBehaviour
     [SerializeField] private float worldSpacing = 1;
     [SerializeField] [Range(0, 1)] private float tileSpawnRate = 1;
     [SerializeField] [Range(0, 1)] private float enemySpawnRate = 0.5f;
-    [SerializeField] [Range(0, 1)] private float wallSpawning = 0.0f; 
+    [SerializeField] [Range(0, 1)] private float wallSpawning = 0.0f;
     [SerializeField] private float spawnScaling = 1;
     [SerializeField] private bool generateEnemies = false;
+    [SerializeField] private bool generateRandomSeed = false;
+    [SerializeField] [DrawIf("someBool", true)] private float perlinSeed = 1;
     private Tile[,] tileMatrix;
-    private float _perlinSeed;
-    private BoardController _boardController;
     
     private void Start()
     {
         tileMatrix = new Tile[xSize, ySize];
-        _perlinSeed = Random.value * 1000;
     }
 
     public void GenerateTileMap()
     {
-        _boardController = BoardController._boardController;
-        _perlinSeed = _boardController.GetGenerationSeed();
+        ClearTileMap();
+
         tileMatrix = new Tile[xSize, ySize];
         for (int i = 0; i < xSize; i++)
         {
             for (int j = 0; j < ySize; j++)
             {
-                float spawnValue = Mathf.PerlinNoise((i + _perlinSeed) * spawnScaling, (j + _perlinSeed) * spawnScaling);
+                float spawnValue = Mathf.PerlinNoise((i + perlinSeed) * spawnScaling, (j + perlinSeed) * spawnScaling);
                 if (spawnValue <= tileSpawnRate)
                 {
                     tileMatrix[i, j] = Instantiate(
@@ -52,7 +51,7 @@ public class TileMap : MonoBehaviour
                         TileObject wall = Instantiate(wallObject,
                             transform.position + new Vector3(i * worldSpacing, 0, j * worldSpacing),
                             Quaternion.identity, 
-                            transform.GetChild(0));
+                            transform.GetChild(1));
                         InitializePosition(wall);
                     }
                 }
@@ -70,6 +69,29 @@ public class TileMap : MonoBehaviour
         }
     }
 
+    public void ClearTileMap()
+    {
+        Transform tiles = transform.GetChild(0);
+        Transform walls = transform.GetChild(1);
+        Transform spawnedEnemies = transform.GetChild(2);
+
+        for (int i = tiles.childCount - 1; i > -1; i--)
+        {
+            DestroyImmediate(tiles.GetChild(i).gameObject);
+        }
+        
+        for (int i = walls.childCount - 1; i > -1; i--)
+        {
+            DestroyImmediate(walls.GetChild(i).gameObject);
+        }
+
+        for (int i = spawnedEnemies.childCount - 1; i > -1; i--)
+        {
+            DestroyImmediate(spawnedEnemies.GetChild(i).gameObject);
+        }
+
+    }
+
     public void SpawnEnemies()
     {
         if (generateEnemies)
@@ -78,7 +100,7 @@ public class TileMap : MonoBehaviour
             {
                 for (int j = 0; j < ySize; j++)
                 {
-                    float spawnValue = Mathf.PerlinNoise((i + _perlinSeed) * spawnScaling, (j + _perlinSeed) * spawnScaling);
+                    float spawnValue = Mathf.PerlinNoise((i + perlinSeed) * spawnScaling, (j + perlinSeed) * spawnScaling);
                     if (!tileMatrix[i, j].IsStaticTile() && tileMatrix[i, j].GetOccupiedTileObject() == null)
                     {
                         if (spawnValue <= enemySpawnRate)
@@ -187,5 +209,15 @@ public class TileMap : MonoBehaviour
 
         print("Can't place object " + tileObject + " : tile already occupied at position " + tile.GetPosition());
         return false;
+    }
+
+    public float GetPerlinNoise()
+    {
+        return perlinSeed;
+    }
+
+    public bool IsGeneratingRandomSeed()
+    {
+        return generateRandomSeed;
     }
 }

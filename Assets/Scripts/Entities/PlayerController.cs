@@ -158,7 +158,15 @@ public class PlayerController : UnitController
                 {
                     if (Attack(unitController))
                     {
-                        attackTime = attackCooldown;
+                        if (unitController.GetUnitStats().currentHealth != 0)
+                        {
+                            attackTime = attackCooldown;
+                        }
+                        else
+                        {
+                            ChangeState(States.Idle);
+                        }
+                            
                     }
                     else
                     {
@@ -170,7 +178,6 @@ public class PlayerController : UnitController
                 {
                     ChangeState(States.Idle);
                     return;
-
                 }
             }
             else
@@ -313,6 +320,15 @@ public class PlayerController : UnitController
                 currentState = 2;
             }
             break;
+        }
+    }
+
+    protected override void OnValidate()
+    {
+        base.OnValidate();
+        if (CameraController._cameraController != null)
+        {
+            CameraController._cameraController.SetSpeed(movementSpeed);
         }
     }
 }

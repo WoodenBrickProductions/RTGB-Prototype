@@ -55,6 +55,11 @@ public class Tile : MonoBehaviour
     public void SetStaticTile(bool isStatic)
     {
         staticTile = isStatic;
+        if (_solidModel == null || _solidModel == null)
+        {
+            _solidModel = transform.GetChild(0).gameObject;
+            _pitModel = transform.GetChild(1).gameObject;
+        }
         if (staticTile)
         {
             _solidModel.SetActive(false);
