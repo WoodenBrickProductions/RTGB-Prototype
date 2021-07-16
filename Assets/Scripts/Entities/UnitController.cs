@@ -27,8 +27,8 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
     [SerializeField] protected int currentState = 0; // DEBUG-ONLY SERIALIZE
     [SerializeField] protected float attackCooldown; // TODO: Change to attack speed?
     
-    
     protected float WorldMoveStep = 1;
+    protected float WorldScalling = 1;
     protected Tile TargetTile;
     private UIController _uiController;
     protected UnitIndicatorController IndicatorController;
@@ -37,7 +37,8 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
     protected override void Start()
     {
         base.Start();
-        WorldMoveStep = boardController.GetWorldTileSpacing();
+        WorldScalling = boardController.GetWorldTileSpacing();
+        WorldMoveStep = movementSpeed * WorldScalling;
         _uiController = UIController.uiController;
         unitStats.currentHealth = unitStats.maxHealth;
         attackCooldown = 1.0f / unitStats.attackSpeed;
@@ -50,7 +51,7 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
         transform.position = Vector3.MoveTowards(
             transform.position,
             tile.transform.position,
-            movementSpeed * worldMovementStep * Time.deltaTime);
+            worldMovementStep * Time.deltaTime);
     }
 
     private void SetHealth(int healthChange)
@@ -156,6 +157,7 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
     protected virtual void OnValidate()
     {
         attackCooldown = 1.0f / unitStats.attackSpeed;
+        WorldMoveStep = WorldScalling * movementSpeed;
     }
 }
 

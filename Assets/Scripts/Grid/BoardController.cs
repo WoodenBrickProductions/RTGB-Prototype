@@ -25,12 +25,6 @@ public class BoardController : MonoBehaviour
         _tileMap.SpawnEnemies();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public float GetWorldTileSpacing()
     {
         return worldTileSpacing;
@@ -45,7 +39,6 @@ public class BoardController : MonoBehaviour
                 Tile tile = _tileMap.GetValidTile();
                 if (tile.SetTileObject(tileObject))
                 {
-                    tileObject.SetPosition(tile.GetPosition());
                     tileObject.transform.position = tile.transform.position;
                     tileObject.SetOccupiedTile(tile);
                 }

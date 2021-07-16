@@ -23,7 +23,7 @@ public class UIController : MonoBehaviour
 
     private void Start()
     {
-        _playerController = PlayerController._playerController;
+        _playerController = PlayerController._;
         _playerHealthBar.SetMaxHealth(_playerController.GetUnitStats().maxHealth);
     }
 

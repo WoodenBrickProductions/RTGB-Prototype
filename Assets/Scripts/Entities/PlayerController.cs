@@ -4,11 +4,15 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Transactions;
 using UnityEngine;
+using UnityEngine.Internal;
 
 // ADD STATES ENUM, MOVE THE BLOODY PLAYER
 public class PlayerController : UnitController
 {
-    public static PlayerController _playerController;
+    [SerializeField] [Range(0,1)] private float movementSnapThreshold = 0.5f;
+    public static PlayerController _;
+
+    private float _moveStepMultiplier = 1;
     private bool _stoppedMoving;
     private KeyCode _inputDirection;
     private KeyCode newInput = 0;
@@ -16,13 +20,14 @@ public class PlayerController : UnitController
     
     protected void Awake()
     {
-        _playerController = this;
+        _ = this;
     }
 
     protected override void Start()
     {
         base.Start();
         staticObject = false;
+        _moveStepMultiplier = 1 / movementSnapThreshold;
     }
 
     void Update()
@@ -91,16 +96,15 @@ public class PlayerController : UnitController
 
     private void MovingUpdate()
     {
-        // TODO change to constant
-        if (moveTime >= 0.5 / movementSpeed)
+        if (moveTime >= movementSnapThreshold / movementSpeed)
         {
-            MoveToTile(TargetTile, WorldMoveStep * 2);
+            MoveToTile(TargetTile, WorldMoveStep * _moveStepMultiplier);
         } else if (!_stoppedMoving)
         {
             _stoppedMoving = true;
             _occupiedTile.ClearTileObject();
             _occupiedTile = TargetTile;
-            _position = _occupiedTile.GetPosition();
+            // _position = _occupiedTile.GetGridPosition();
             transform.position = TargetTile.transform.position;
         }
 
@@ -301,26 +305,23 @@ public class PlayerController : UnitController
             case 0:
             {
                 IndicatorController.ClearIndicator();
-                currentState = 0;
             }
             break;
-
             case 1:
             {
                 IndicatorController.SetIndicator(_inputDirection, IndicatorState.Moving);
                 moveTime = 1.0f / movementSpeed;
                 _stoppedMoving = false;
-                currentState = 1;
             }
             break;
             case 2:
             {
                 IndicatorController.SetIndicator(_inputDirection, IndicatorState.Attacking);
                 attackTime = attackCooldown;
-                currentState = 2;
             }
             break;
         }
+        currentState = (int) newState;
     }
 
     protected override void OnValidate()
@@ -330,5 +331,7 @@ public class PlayerController : UnitController
         {
             CameraController._cameraController.SetSpeed(movementSpeed);
         }
+
+        _moveStepMultiplier = 1 / movementSnapThreshold;
     }
 }

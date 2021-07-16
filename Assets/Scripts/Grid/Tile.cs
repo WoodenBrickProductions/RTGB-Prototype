@@ -21,9 +21,7 @@ public class Tile : MonoBehaviour
 
     public void Start()
     {
-
         SetStaticTile(staticTile);
-
     }
 
     public TileObject GetOccupiedTileObject()
@@ -72,12 +70,12 @@ public class Tile : MonoBehaviour
         }
     }
     
-    public Position GetPosition()
+    public Position GetGridPosition()
     {
         return _position;
     }
 
-    public void SetPosition(Position position)
+    public void SetGridPosition(Position position)
     {
         _position = position;
     }

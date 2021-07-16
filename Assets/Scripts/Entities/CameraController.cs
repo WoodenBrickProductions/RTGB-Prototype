@@ -22,7 +22,7 @@ public class CameraController : MonoBehaviour
     {
         if (cameraFollow == null)
         {
-            cameraFollow = PlayerController._playerController;
+            cameraFollow = PlayerController._;
         }
         movementSpeed = cameraFollow.GetMovementSpeed();
         worldSpaceStep = BoardController._boardController.GetWorldTileSpacing();

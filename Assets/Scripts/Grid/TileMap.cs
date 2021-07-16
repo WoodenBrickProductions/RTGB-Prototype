@@ -45,7 +45,7 @@ public class TileMap : MonoBehaviour
                         transform.position + new Vector3(i * worldSpacing, 0, j * worldSpacing),
                         Quaternion.identity,
                         transform.GetChild(0));
-                    tileMatrix[i, j].SetPosition(new Position(i, j));
+                    tileMatrix[i, j].SetGridPosition(new Position(i, j));
                     if (spawnValue > tileSpawnRate * (1 - wallSpawning))
                     {
                         TileObject wall = Instantiate(wallObject,
@@ -63,7 +63,7 @@ public class TileMap : MonoBehaviour
                         Quaternion.identity,
                         transform.GetChild(0));
                     tileMatrix[i, j].SetStaticTile(true);
-                    tileMatrix[i, j].SetPosition(new Position(i, j));
+                    tileMatrix[i, j].SetGridPosition(new Position(i, j));
                 }
             }
         }
@@ -133,7 +133,7 @@ public class TileMap : MonoBehaviour
                 transform.position + new Vector3(position.x * worldSpacing, 0, position.y * worldSpacing),
                 Quaternion.identity,
                 transform);
-            tileMatrix[position.x, position.y].SetPosition(new Position(position.x, position.y));
+            tileMatrix[position.x, position.y].SetGridPosition(new Position(position.x, position.y));
         }
     }
 
@@ -188,26 +188,25 @@ public class TileMap : MonoBehaviour
 
         if (tile.IsStaticTile())
         {
-            print("Can't place object " + tileObject + " : tile is static at position " + tile.GetPosition());
+            print("Can't place object " + tileObject + " : tile is static at position " + tile.GetGridPosition());
             return false;
         }
         
         if (tile.GetOccupiedTileObject() != null)
         {
-            print("Can't place object " + tileObject + " : tile already occupied at position " + tile.GetPosition());
+            print("Can't place object " + tileObject + " : tile already occupied at position " + tile.GetGridPosition());
             return false;
         }
         
         if (tile.SetTileObject(tileObject))
         {
-            tileObject.SetPosition(position);
             tileObject.transform.position = tile.transform.position;
             tileObject.SetOccupiedTile(tile);
             tile.SetTileObject(tileObject);
             return true;
         }
 
-        print("Can't place object " + tileObject + " : tile already occupied at position " + tile.GetPosition());
+        print("Can't place object " + tileObject + " : tile already occupied at position " + tile.GetGridPosition());
         return false;
     }
 

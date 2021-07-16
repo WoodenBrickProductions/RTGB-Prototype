@@ -3,6 +3,7 @@ using UnityEngine;
 public class PseudoRandomNumberGenerator
 {
     private float[] numberTolerances;
+    private readonly int _forOthersPortion;
     
     public PseudoRandomNumberGenerator(int numberOfOptions)
     {
@@ -11,6 +12,8 @@ public class PseudoRandomNumberGenerator
         {
             numberTolerances[i] = 1.0f / numberOfOptions;
         }
+
+        _forOthersPortion = numberOfOptions - 1;
     }
 
     public int GetPseudoRandomNumber()
@@ -42,7 +45,7 @@ public class PseudoRandomNumberGenerator
             }
             else
             {
-                numberTolerances[i] += minusValue / 3;
+                numberTolerances[i] += minusValue / _forOthersPortion;
             }
         }
 

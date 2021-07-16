@@ -14,17 +14,12 @@ public class TileObject : MonoBehaviour
     protected virtual void Start()
     {
         boardController = BoardController._boardController;
-        if (_position == null)
+        if (_occupiedTile == null)
         {
             boardController.InitializePosition(this);
         }
     }
 
-    public void SetPosition(Position position)
-    {
-        _position = position;
-    }
-    
     public bool IsStaticObject()
     {
         return staticObject;
@@ -38,5 +33,6 @@ public class TileObject : MonoBehaviour
     public void SetOccupiedTile(Tile tile)
     {
         _occupiedTile = tile;
+        _position = _occupiedTile.GetGridPosition();
     }
 }

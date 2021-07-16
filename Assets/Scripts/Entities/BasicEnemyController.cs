@@ -42,7 +42,7 @@ public class BasicEnemyController : UnitController
         _possibleMoves.Add(Position.Right);
         _possibleMoves.Add(Position.Down);
         _possibleMoves.Add(Position.Left);
-        _playerController = PlayerController._playerController;
+        _playerController = PlayerController._;
     }
 
     void Update()
@@ -157,7 +157,7 @@ public class BasicEnemyController : UnitController
             transform.position = TargetTile.transform.position;
             _occupiedTile.ClearTileObject();
             _occupiedTile = TargetTile;
-            _position = _occupiedTile.GetPosition();
+            _position = _occupiedTile.GetGridPosition();
         }else if(moveTime <= 0)
         {
             ChangeState(chasing ? States.Chasing : States.Idle);
@@ -258,7 +258,7 @@ public class BasicEnemyController : UnitController
         {
             return false;
         }
-        _lastPlayerPosition = playerTile.GetPosition();
+        _lastPlayerPosition = playerTile.GetGridPosition();
         int distance = Position.Distance(_lastPlayerPosition, _position);
         if (distance <= range)
         {
@@ -316,7 +316,7 @@ public class BasicEnemyController : UnitController
                             (neighborTile.GetOccupiedTileObject() == null || neighborTile.GetOccupiedTileObject().CompareTag("Player")))
                         {
                             Node currentNeighbor = new Node();
-                            currentNeighbor.position = neighborTile.GetPosition();
+                            currentNeighbor.position = neighborTile.GetGridPosition();
                             if (!visited.Contains(currentNeighbor.position))
                             {
                                 currentNeighbor.history = new List<Position>(current.history);
@@ -342,7 +342,7 @@ public class BasicEnemyController : UnitController
 
     private KeyCode GetInputDirection()
     {
-        Position direction = TargetTile.GetPosition() - _position;
+        Position direction = TargetTile.GetGridPosition() - _position;
 
         if (direction.Equals(Position.Up))
         {
