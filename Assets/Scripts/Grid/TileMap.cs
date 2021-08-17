@@ -20,17 +20,47 @@ public class TileMap : MonoBehaviour
     [SerializeField] private float spawnScaling = 1;
     [SerializeField] private bool generateEnemies = false;
     [SerializeField] private bool generateRandomSeed = false;
-    [SerializeField] [DrawIf("someBool", true)] private float perlinSeed = 1;
+    [SerializeField] [DrawIf("generateRandomSeed", false)] private float perlinSeed = 1;
     private Tile[,] tileMatrix;
-    
-    private void Start()
+
+    public void LoadTileMap()
     {
-        tileMatrix = new Tile[xSize, ySize];
+        if (IsTileMapGenerated())
+        {
+            tileMatrix = new Tile[xSize, ySize];
+            // Tile[] grid = GetComponentsInChildren<Tile>();
+            // for (int i = 0; i < xSize; i++)
+            // {
+            //     for (int j = 0; j < ySize; j++)
+            //     {
+            //         tileMatrix[i, j] = grid[i * ySize + j];
+            //         // This shouldn't be here, grid position should be a component
+            //         tileMatrix[i, j].SetGridPosition( new Position(i, j));
+            //     }
+            // }
+            //
+
+            Transform tiles = transform.GetChild(0);
+            for (int i = 0; i < xSize; i++)
+            {
+                for (int j = 0; j < ySize; j++)
+                {
+                    tileMatrix[i, j] = tiles.GetChild(i * ySize + j).GetComponent<Tile>();
+                    // This shouldn't be here, grid position should be a component
+                    tileMatrix[i, j].SetGridPosition( new Position(i, j));
+                }
+            }
+        }
     }
+    
 
     public void GenerateTileMap()
     {
         ClearTileMap();
+        if (generateRandomSeed)
+        {
+            perlinSeed = Random.value * 1000;
+        }
 
         tileMatrix = new Tile[xSize, ySize];
         for (int i = 0; i < xSize; i++)
@@ -45,7 +75,7 @@ public class TileMap : MonoBehaviour
                         transform.position + new Vector3(i * worldSpacing, 0, j * worldSpacing),
                         Quaternion.identity,
                         transform.GetChild(0));
-                    tileMatrix[i, j].SetGridPosition(new Position(i, j));
+                    tileMatrix[i, j].SetGridPosition( new Position(i, j));
                     if (spawnValue > tileSpawnRate * (1 - wallSpawning))
                     {
                         TileObject wall = Instantiate(wallObject,
@@ -90,6 +120,7 @@ public class TileMap : MonoBehaviour
             DestroyImmediate(spawnedEnemies.GetChild(i).gameObject);
         }
 
+        tileMatrix = null;
     }
 
     public void SpawnEnemies()
@@ -124,18 +155,18 @@ public class TileMap : MonoBehaviour
         }
     }
 
-    public void GenerateTile(Position position)
-    {
-        if (position.x >= 0 && position.x < xSize && position.y >= 0 && position.y < ySize)
-        {
-            tileMatrix[position.x, position.y] = Instantiate(
-                baseTile,
-                transform.position + new Vector3(position.x * worldSpacing, 0, position.y * worldSpacing),
-                Quaternion.identity,
-                transform);
-            tileMatrix[position.x, position.y].SetGridPosition(new Position(position.x, position.y));
-        }
-    }
+    // public void GenerateTile(Position position)
+    // {
+    //     if (position.x >= 0 && position.x < xSize && position.y >= 0 && position.y < ySize)
+    //     {
+    //         tileMatrix[position.x, position.y] = Instantiate(
+    //             baseTile,
+    //             transform.position + new Vector3(position.x * worldSpacing, 0, position.y * worldSpacing),
+    //             Quaternion.identity,
+    //             transform);
+    //         tileMatrix[position.x, position.y].SetGridPosition(new Position(position.x, position.y));
+    //     }
+    // }
 
     public float GetWorldTileSpacing()
     {
@@ -210,13 +241,8 @@ public class TileMap : MonoBehaviour
         return false;
     }
 
-    public float GetPerlinNoise()
+    public bool IsTileMapGenerated()
     {
-        return perlinSeed;
-    }
-
-    public bool IsGeneratingRandomSeed()
-    {
-        return generateRandomSeed;
+        return transform.GetChild(0).childCount != 0;
     }
 }

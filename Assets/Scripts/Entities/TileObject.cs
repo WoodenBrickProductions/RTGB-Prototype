@@ -5,18 +5,25 @@ using UnityEngine;
 
 public class TileObject : MonoBehaviour
 {
+    [Header("Tile Object")]
     [SerializeField] protected bool staticObject;
-    protected Tile _occupiedTile;
+    [SerializeField] protected Tile _occupiedTile;
     protected Position _position = null;
     protected BoardController boardController;
-
+    
     // Start is called before the first frame update
+    
     protected virtual void Start()
     {
         boardController = BoardController._boardController;
         if (_occupiedTile == null)
         {
+            // print("_occupiedTile is null");
             boardController.InitializePosition(this);
+        }
+        else
+        {
+            // print("OccupiedTile is " + _occupiedTile);
         }
     }
 
@@ -34,5 +41,15 @@ public class TileObject : MonoBehaviour
     {
         _occupiedTile = tile;
         _position = _occupiedTile.GetGridPosition();
+    }
+
+    public void ClearOccupiedTile()
+    {
+        _occupiedTile.ClearTileObject();
+    }
+
+    protected virtual void SubscribeToEvents()
+    {
+        
     }
 }

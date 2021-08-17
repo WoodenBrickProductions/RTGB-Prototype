@@ -6,10 +6,14 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
+
+    public Action<TileObject> NotifyTileEnteredHandler;
+    
+    
     [SerializeField] private TileObject _occupiedTileObject;
     [SerializeField] private bool staticTile = false;
     private Position _position;
-
+    
     private GameObject _solidModel;
     private GameObject _pitModel;
 
@@ -34,6 +38,10 @@ public class Tile : MonoBehaviour
         if (!staticTile && _occupiedTileObject == null)
         {
             _occupiedTileObject = occupiedObject;
+            if (NotifyTileEnteredHandler != null)
+            {
+                NotifyTileEnteredHandler(occupiedObject);
+            }
             return true;
         }
 
@@ -53,7 +61,7 @@ public class Tile : MonoBehaviour
     public void SetStaticTile(bool isStatic)
     {
         staticTile = isStatic;
-        if (_solidModel == null || _solidModel == null)
+        if (_solidModel == null || _pitModel == null)
         {
             _solidModel = transform.GetChild(0).gameObject;
             _pitModel = transform.GetChild(1).gameObject;

@@ -16,13 +16,25 @@ public class BoardController : MonoBehaviour
     private void Awake()
     {
         _boardController = this;
+        worldTileSpacing = _tileMap.GetWorldTileSpacing();
+        if (_tileMap.IsTileMapGenerated())
+        {
+            // Replace with logging
+            print("Loading tilemap...");
+            _tileMap.LoadTileMap();
+        }
+        else
+        {
+            // Replace with logging
+            print("Generating tilemap...");
+            _tileMap.GenerateTileMap();
+        }
+        _tileMap.SpawnEnemies();
     }
 
     void Start()
     {
-        worldTileSpacing = _tileMap.GetWorldTileSpacing();
-        _tileMap.GenerateTileMap();
-        _tileMap.SpawnEnemies();
+        
     }
 
     public float GetWorldTileSpacing()

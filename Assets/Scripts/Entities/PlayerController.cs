@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Transactions;
+using Data;
 using UnityEngine;
 using UnityEngine.Internal;
+using Random = UnityEngine.Random;
 
 // ADD STATES ENUM, MOVE THE BLOODY PLAYER
 public class PlayerController : UnitController
@@ -18,6 +20,8 @@ public class PlayerController : UnitController
     private KeyCode newInput = 0;
     private KeyCode changeInput = 0;
     
+    public EventQueue.CustomEvent OnPauseAll;
+    
     protected void Awake()
     {
         _ = this;
@@ -26,14 +30,21 @@ public class PlayerController : UnitController
     protected override void Start()
     {
         base.Start();
+        _eventQueue = EventQueue.current;
         staticObject = false;
         _moveStepMultiplier = 1 / movementSnapThreshold;
+        OnPauseAll += Pause;
     }
 
     void Update()
     {
+        // TESTING
+        TestGetInput();
+        
         switch (currentState)
         {
+            case -1: // PAUSED
+                return;
             case 0: // IDLE
                 newInput = GetInputDirection();
                 IdleUpdate();
@@ -46,7 +57,7 @@ public class PlayerController : UnitController
                 AttackingUpdate();
                 break;
             case 3: // DISABLED
-                break;
+                break;                
         }
         if (attackTime > 0)
         {
@@ -103,8 +114,9 @@ public class PlayerController : UnitController
         {
             _stoppedMoving = true;
             _occupiedTile.ClearTileObject();
-            _occupiedTile = TargetTile;
+            // _occupiedTile = TargetTile;
             // _position = _occupiedTile.GetGridPosition();
+            SetOccupiedTile(TargetTile);
             transform.position = TargetTile.transform.position;
         }
 
@@ -209,14 +221,19 @@ public class PlayerController : UnitController
                                     _inputDirection = changeInput;
                                     TargetTile = newTile;
                                     ChangeState(States.Attacking);
-                                    // Continue attack state with new target
+
+                                /*
+                                Continue attack state with new target 
+                                */
                                 }
                             }
                         }
                     }
                     else
                     {
-                        // Change to moving, shouldn't occur because of attack cancelling
+                        /*
+                        Change to moving, shouldn't occur because of attack cancelling
+                        */
                         TargetTile = newTile;
                         print("This shouldn't be called!");
                         if (TargetTile.SetTileObject(this))
@@ -300,6 +317,7 @@ public class PlayerController : UnitController
     
     protected override void ChangeState(States newState)
     {
+        print("Player current position:" + _position + " in state " + currentState);
         switch ((int) newState)
         {
             case 0:
@@ -320,18 +338,21 @@ public class PlayerController : UnitController
                 attackTime = attackCooldown;
             }
             break;
+            case 3:
+            {
+                
+            }
+            break;
         }
         currentState = (int) newState;
     }
 
-    protected override void OnValidate()
+    // Move this to seperate input handling independant of Player entity
+    private void TestGetInput()
     {
-        base.OnValidate();
-        if (CameraController._cameraController != null)
+        if (Input.GetKeyDown(KeyCode.M))
         {
-            CameraController._cameraController.SetSpeed(movementSpeed);
+            _eventQueue.AddEventRequest(OnPauseAll, gameObject);
         }
-
-        _moveStepMultiplier = 1 / movementSnapThreshold;
     }
 }

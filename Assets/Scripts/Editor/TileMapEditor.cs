@@ -9,7 +9,7 @@ public class TileMapEditor : UnityEditor.Editor
         base.OnInspectorGUI();
         TileMap tileMap = (TileMap) target;
     
-        GUILayout.Label("Perlin seed: " + tileMap.GetPerlinNoise());
+        // GUILayout.Label("Perlin seed: " + tileMap.GetPerlinNoise());
         
         if (GUILayout.Button("Generate tilemap"))
         {

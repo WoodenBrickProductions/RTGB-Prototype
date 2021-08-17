@@ -7,6 +7,7 @@ using UnityEngine.Timeline;
 
 public enum States
 {
+    Paused = -1, // At the Paused state, all entities are disabled;
     Idle = 0,
     Moving = 1,
     Attacking = 2,
@@ -26,17 +27,19 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
     [SerializeField] protected float attackTime; // DEBUG-ONLY SERIALIZE
     [SerializeField] protected int currentState = 0; // DEBUG-ONLY SERIALIZE
     [SerializeField] protected float attackCooldown; // TODO: Change to attack speed?
-    
+
+    protected Queue<States> state;
     protected float WorldMoveStep = 1;
     protected float WorldScalling = 1;
     protected Tile TargetTile;
     private UIController _uiController;
     protected UnitIndicatorController IndicatorController;
-    
+    protected EventQueue _eventQueue;
     
     protected override void Start()
     {
         base.Start();
+        state = new Queue<States>();
         WorldScalling = boardController.GetWorldTileSpacing();
         WorldMoveStep = movementSpeed * WorldScalling;
         _uiController = UIController.uiController;
@@ -118,6 +121,7 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
 
     protected virtual void ChangeState(States newState)
     {
+        print("BaseStateIsCalled");
         currentState = (int) newState;
     }
     
@@ -158,6 +162,25 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
     {
         attackCooldown = 1.0f / unitStats.attackSpeed;
         WorldMoveStep = WorldScalling * movementSpeed;
+    }
+
+
+    protected virtual void Pause(GameObject sender)
+    {
+        if (currentState != -1)
+        {
+            state.Enqueue((States) currentState);
+            ChangeState(States.Paused);
+        }
+        else
+        {
+            currentState = (int) state.Dequeue();
+        }
+    }
+
+    private void SubscribeToEvents()
+    {
+        
     }
 }
 

@@ -43,6 +43,7 @@ public class BasicEnemyController : UnitController
         _possibleMoves.Add(Position.Down);
         _possibleMoves.Add(Position.Left);
         _playerController = PlayerController._;
+        _playerController.OnPauseAll += Pause;
     }
 
     void Update()

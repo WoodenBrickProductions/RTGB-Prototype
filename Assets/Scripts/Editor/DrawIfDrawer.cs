@@ -47,11 +47,8 @@ public class DrawIfPropertyDrawer : PropertyDrawer
         
         // Is the condition met? Should the field be drawn?
         bool conditionMet = false;
- 
-        if((bool) comparedFieldValue)
-        {
-            conditionMet = true;
-        }
+
+        conditionMet = (bool) comparedFieldValue == (bool) drawIf.comparedValue;
  
         // The height of the property should be defaulted to the default height.
         propertyHeight = base.GetPropertyHeight(property, label);
