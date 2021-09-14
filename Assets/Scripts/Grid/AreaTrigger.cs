@@ -7,6 +7,7 @@ using UnityEngine;
 public class AreaTrigger : MonoBehaviour
 {
     public Action<TileObject> NotifyEntityEnteredHandler;
+    private Transform visualRect;
     
     [SerializeField] private int xSize, ySize;
     [SerializeField] private string[] tags;
@@ -17,6 +18,7 @@ public class AreaTrigger : MonoBehaviour
     
     private void Awake()
     {
+        visualRect = transform.GetChild(0);
         if (xSize == 0 || ySize == 0)
         {
             print("Can't create AreaTrigger: size too small");
@@ -71,5 +73,14 @@ public class AreaTrigger : MonoBehaviour
     public void SetGridPosition(Position position)
     {
         _position = position;
+    }
+
+    private void OnValidate()
+    {
+        if (visualRect == null)
+        {
+            visualRect = transform.GetChild(0);
+        }
+        visualRect.localScale = new Vector3(xSize, 1, ySize);
     }
 }

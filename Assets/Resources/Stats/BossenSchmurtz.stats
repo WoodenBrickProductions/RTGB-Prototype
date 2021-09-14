@@ -1,0 +1,18 @@
+unit_stats
+{
+    max_health 10;
+    attack_damage 1;
+    experience 1;
+    level 0;
+    attack_range 1;
+    attack_speed 1;
+    movement_speed 3;
+}
+ai_stats:
+{
+    wander_cooldown 2;
+    agro_range 7;
+    chasing_range 10;
+    chasing_cooldown 0.25;
+    use_pseudo_random 0;
+}

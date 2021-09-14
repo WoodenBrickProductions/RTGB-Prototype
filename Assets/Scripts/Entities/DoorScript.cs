@@ -10,10 +10,16 @@ enum function
     Toggle
 }
 
+[Serializable]
+class TriggerForDoor
+{
+    public AreaTrigger areaTrigger;
+    public function doorFunction;
+}
+
 public class DoorScript : MonoBehaviour
 {
-    [SerializeField] private AreaTrigger[] areaTriggers;
-    [SerializeField] private function doorFunction;
+    [SerializeField] private TriggerForDoor[] doorTriggers;
     [SerializeField] private bool opened = false;
     private Tile _doorTile;
     
@@ -24,45 +30,49 @@ public class DoorScript : MonoBehaviour
     {
         _doorObject = transform.GetChild(0).GetComponent<TileObject>();
         _doorObject.gameObject.SetActive(true);
-        foreach (var trigger in areaTriggers)
+        foreach (var trigger in doorTriggers)
         { 
-            trigger.NotifyEntityEnteredHandler += DoorFunction;
+            trigger.areaTrigger.NotifyEntityEnteredHandler += DoorFunction(trigger.doorFunction);
         }
         _doorTile = _doorObject.GetOccupiedTile();
         if (opened)
         {
-            OpenDoor();
+            OpenDoor(null);
         }
         else
         {
-            CloseDoor();
+            CloseDoor(null);
         }
     }
     
-    private void DoorFunction(TileObject sender)
+    private Action<TileObject> DoorFunction(function doorFunction)
     {
         switch (doorFunction)
         {
             case function.Open:
-                OpenDoor();
-                break;
+                return OpenDoor;
             case function.Close:
-                CloseDoor();
-                break;
+                return CloseDoor;
             case function.Toggle:
-                if (opened)
-                {
-                    CloseDoor();
-                }
-                else
-                {
-                    OpenDoor();
-                }
-                break;
+                return ToggleDoor;
         }
+        return null;
+    }
+
+    private void ToggleDoor(TileObject sender)  //Toggledore, the greatest contraption wizard of the land
+    {
+        if (opened)
+        {
+            CloseDoor(sender);
+        }
+        else
+        {
+            OpenDoor(sender);
+        }
+        opened = !opened;
     }
     
-    private void OpenDoor()
+    private void OpenDoor(TileObject sender)
     {
         _doorObject.GetOccupiedTile().ClearTileObject();
         _doorObject.ClearOccupiedTile();
@@ -70,7 +80,7 @@ public class DoorScript : MonoBehaviour
         opened = true;
     }
 
-    private void CloseDoor()
+    private void CloseDoor(TileObject sender)
     {
         print("Closing door");
         
@@ -88,15 +98,22 @@ public class DoorScript : MonoBehaviour
 
     private void OnValidate()
     {
+        foreach(var trigger in doorTriggers)
+        {
+            if (trigger.areaTrigger == null)
+            {
+                print("Missing trigger in " + name + "!");
+            }
+        }
         if (_doorTile != null)
         {
             if (opened)
             {
-                OpenDoor();
+                OpenDoor(null);
             }
             else
             {
-                CloseDoor();
+                CloseDoor(null);
             }
         }
         else

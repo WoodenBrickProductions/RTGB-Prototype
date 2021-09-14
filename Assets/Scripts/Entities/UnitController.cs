@@ -8,11 +8,14 @@ using UnityEngine.Timeline;
 public enum States
 {
     Paused = -1, // At the Paused state, all entities are disabled;
-    Idle = 0,
-    Moving = 1,
+    Idle = 0, // Not doing any checks, needs to be interacted with to Change state
+    Moving = 1, // In movement
     Attacking = 2,
     Disabled = 3,
-    Chasing = 4
+    Chasing = 4,
+    Talking = 5,
+    Searching = 6, // Looking for target
+    Waiting = 7 // Waiting for certain condition to be met, then will take action or change state
 }
 
 public class UnitController : TileObject, IAttackable, IDealsDamage
@@ -32,7 +35,7 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
     protected float WorldMoveStep = 1;
     protected float WorldScalling = 1;
     protected Tile TargetTile;
-    private UIController _uiController;
+    protected UIController uiController;
     protected UnitIndicatorController IndicatorController;
     protected EventQueue _eventQueue;
     
@@ -42,7 +45,7 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
         state = new Queue<States>();
         WorldScalling = boardController.GetWorldTileSpacing();
         WorldMoveStep = movementSpeed * WorldScalling;
-        _uiController = UIController.uiController;
+        uiController = UIController.uiController;
         unitStats.currentHealth = unitStats.maxHealth;
         attackCooldown = 1.0f / unitStats.attackSpeed;
         IndicatorController = GetComponentInChildren<UnitIndicatorController>();
@@ -72,7 +75,7 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
         {
             unitStats.currentHealth += healthChange;
         }
-        _uiController.SetHealth(this);
+        uiController.SetHealth(this);
     }
 
     /**
@@ -103,6 +106,8 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
         return false;
     }
     
+    
+    
     /**
      * Called when this unit attacks another unit.
      */
@@ -130,7 +135,7 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
      */
     public virtual void OnDeath(DamageSource damageSource)
     {
-        _uiController.OnEnemyKilled(this);
+        uiController.OnEnemyKilled(this);
         _occupiedTile.ClearTileObject();
         Destroy(gameObject);
         gameObject.SetActive(false);

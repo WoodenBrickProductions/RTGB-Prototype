@@ -7,25 +7,14 @@ using Random = UnityEngine.Random;
 
 public class BasicEnemyController : UnitController
 {
-    [Header("AI stats")]
-    [SerializeField] private float wanderCooldown;
-    [SerializeField] private int agroRange = 1;
-    [SerializeField] private int chasingRange = 100;
-    [SerializeField] private float chasingCooldown = 0.25f;
-    [SerializeField] private bool usePseudoRandom = false;
-    
-    
-    [Header("Debuging")]
-    [SerializeField] private float wanderTime;
-    [SerializeField] private float chasingTime;
-    [SerializeField] private bool chasing = false;
-    
-    private PlayerController _playerController;
-    private PseudoRandomNumberGenerator _pseudoRandomNumberGenerator;
-    
-    private List<Position> _possibleMoves;
-    private bool _stoppedMoving;
-    private Position _lastPlayerPosition;
+    [SerializeField] private AIStats _aiStats;
+
+    protected PlayerController _playerController;
+    protected PseudoRandomNumberGenerator pseudoRandomNumberGenerator;
+        
+    protected List<Position> _possibleMoves;
+    protected bool _stoppedMoving;
+    protected Position lastPlayerPosition;
     
     
     // Start is called before the first frame update
@@ -33,8 +22,8 @@ public class BasicEnemyController : UnitController
     protected override void Start()
     {
         tag = "Enemy";
-        wanderTime = wanderTime + Random.value;
-        _pseudoRandomNumberGenerator = new PseudoRandomNumberGenerator(4);
+        _aiStats.wanderTime = _aiStats.wanderCooldown + Random.value;
+        pseudoRandomNumberGenerator = new PseudoRandomNumberGenerator(4);
         base.Start();
         attackTime = attackCooldown;
         _possibleMoves = new List<Position>();
@@ -71,17 +60,17 @@ public class BasicEnemyController : UnitController
             attackTime -= Time.deltaTime;
         }
         
-        if (chasingTime > 0)
+        if (_aiStats.chasingTime > 0)
         {
-            chasingTime -= Time.deltaTime;
+            _aiStats.chasingTime -= Time.deltaTime;
         }
     }
 
     private void IdleUpdate()
     {
-        if (!chasing && wanderTime <= 0)
+        if (!_aiStats.chasing && _aiStats.wanderTime <= 0)
         {
-            if (_playerController.GetUnitStatus().CanBeAttacked() && IsPlayerInRange(agroRange))
+            if (_playerController.GetUnitStatus().CanBeAttacked() && IsPlayerInRange(_aiStats.agroRange))
             {
                 ChangeState(States.Chasing);
                 return;
@@ -93,14 +82,14 @@ public class BasicEnemyController : UnitController
                     ChangeState(States.Moving);
                 }
             }
-            wanderTime = wanderCooldown;
+            _aiStats.wanderTime = _aiStats.wanderCooldown;
         }
         else
         {
             float time = Time.deltaTime;
-            if (wanderTime > 0)
+            if (_aiStats.wanderTime > 0)
             {
-                wanderTime -= time;
+                _aiStats.wanderTime -= time;
             }
             if (moveTime > 0)
             {
@@ -114,9 +103,9 @@ public class BasicEnemyController : UnitController
     private bool Wander()
     {
         int randomValue;
-        if (usePseudoRandom)
+        if (_aiStats.usePseudoRandom)
         {
-            randomValue = _pseudoRandomNumberGenerator.GetPseudoRandomNumber();
+            randomValue = pseudoRandomNumberGenerator.GetPseudoRandomNumber();
         }
         else
         {
@@ -161,7 +150,7 @@ public class BasicEnemyController : UnitController
             _position = _occupiedTile.GetGridPosition();
         }else if(moveTime <= 0)
         {
-            ChangeState(chasing ? States.Chasing : States.Idle);
+            ChangeState(_aiStats.chasing ? States.Chasing : States.Idle);
         }
         moveTime -= Time.deltaTime;
     }
@@ -183,13 +172,13 @@ public class BasicEnemyController : UnitController
                     else
                     {
                         //Enemy unit killed
-                        chasing = false;
+                        _aiStats.chasing = false;
                         ChangeState(States.Idle);
                     }
                 }
                 else
                 {
-                    chasing = false;
+                    _aiStats.chasing = false;
                     ChangeState(States.Idle);
                 }
 
@@ -204,31 +193,31 @@ public class BasicEnemyController : UnitController
 
     private void ChasingUpdate()
     {
-        if (chasingTime <= 0)
+        if (_aiStats.chasingTime <= 0)
         {
-            if (_playerController.GetUnitStatus().CanBeAttacked() && chasing)
+            if (_playerController.GetUnitStatus().CanBeAttacked() && _aiStats.chasing)
             {
                 if (IsPlayerInRange(unitStats.attackRange))
                 {
-                    TargetTile = boardController.GetTile(_lastPlayerPosition);
+                    TargetTile = boardController.GetTile(lastPlayerPosition);
                     ChangeState(States.Attacking);
-                } else if (IsPlayerInRange(chasingRange))
+                } else if (IsPlayerInRange(_aiStats.chasingRange))
                 {
                     Chase();
                 }
                 else
                 {
-                    chasing = false;
+                    _aiStats.chasing = false;
                     ChangeState(States.Idle);
                 }
             }
             else
             {
-                chasing = false;
+                _aiStats.chasing = false;
                 ChangeState(States.Idle);
             }
         }
-        // chasingTime decrement is handled in Update.
+        // _aiStats.chasingTime decrement is handled in Update.
     }
 
     /**
@@ -245,12 +234,12 @@ public class BasicEnemyController : UnitController
         }
         else
         {
-                chasingTime = chasingCooldown;
+                _aiStats.chasingTime = _aiStats.chasingCooldown;
         }
     }
 
     /**
-     * Checks if player is within range (grid-based), sets _lastPlayerPosition.
+     * Checks if player is within range (grid-based), sets lastPlayerPosition.
      */
     private bool IsPlayerInRange(int range)
     {
@@ -259,11 +248,11 @@ public class BasicEnemyController : UnitController
         {
             return false;
         }
-        _lastPlayerPosition = playerTile.GetGridPosition();
-        int distance = Position.Distance(_lastPlayerPosition, _position);
+        lastPlayerPosition = playerTile.GetGridPosition();
+        int distance = Position.Distance(lastPlayerPosition, _position);
         if (distance <= range)
         {
-            // TargetTile = boardController.GetTile(_lastPlayerPosition);
+            // TargetTile = boardController.GetTile(lastPlayerPosition);
             return true;
         }
 
@@ -290,7 +279,7 @@ public class BasicEnemyController : UnitController
         while(work.Count > 0)
         {
             Node current = work.Dequeue();
-            if (current.history.Count > chasingRange)
+            if (current.history.Count > _aiStats.chasingRange)
             {
                 return false;
             }
@@ -337,7 +326,7 @@ public class BasicEnemyController : UnitController
     public override void OnTargetObjectKilled(IAttackable target)
     {
         base.OnTargetObjectKilled(target);
-        chasing = false;
+        _aiStats.chasing = false;
         ChangeState(States.Idle);
     }
 
@@ -374,7 +363,7 @@ public class BasicEnemyController : UnitController
             case 0: // IDLE
             {
                 IndicatorController.ClearIndicator();
-                if (_playerController.GetUnitStatus().CanBeAttacked() && IsPlayerInRange(agroRange))
+                if (_playerController.GetUnitStatus().CanBeAttacked() && IsPlayerInRange(_aiStats.agroRange))
                 {
                     ChangeState(States.Chasing);
                     return;
@@ -402,7 +391,7 @@ public class BasicEnemyController : UnitController
             case 4: // CHASING
             {
                 IndicatorController.ClearIndicator();
-                chasing = true;
+                _aiStats.chasing = true;
             }
                 break;
         }

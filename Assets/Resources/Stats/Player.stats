@@ -1,0 +1,7 @@
+max_health 100;
+attack_damage 1;
+experience 0;
+level 1;
+attack_range 1;
+attack_speed 1;
+movement_speed 5;

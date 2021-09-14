@@ -8,6 +8,7 @@ public class BoardController : MonoBehaviour
 {
     private float worldTileSpacing;
     public static BoardController _boardController;
+    
     [SerializeField] private TileMap _tileMap; 
     
     

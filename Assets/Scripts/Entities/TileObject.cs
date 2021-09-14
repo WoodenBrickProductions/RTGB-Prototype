@@ -11,7 +11,7 @@ public class TileObject : MonoBehaviour
     protected Position _position = null;
     protected BoardController boardController;
     
-    // Start is called before the first frame update
+        
     
     protected virtual void Start()
     {
@@ -52,4 +52,10 @@ public class TileObject : MonoBehaviour
     {
         
     }
+
+    public void AddMessageToQueue(string message, TileObject sender)
+    {
+        // Add message to queue
+    }
+    
 }
