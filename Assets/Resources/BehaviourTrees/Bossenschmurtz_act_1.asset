@@ -1,0 +1,635 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7289682351596216978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 618347b8794c40f48a26a28044e2bdf4, type: 3}
+  m_Name: SequencerNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 9a50d1c8853d1e1448eccb8535f4803b
+  position: {x: 260.99503, y: 108}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: 
+  children:
+  - {fileID: 4131484121947639568}
+  - {fileID: 5041492449284494146}
+--- !u!114 &-6492399361510074394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 618347b8794c40f48a26a28044e2bdf4, type: 3}
+  m_Name: SequencerNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 793e4df4ad4c89946a9bf60de4cf2802
+  position: {x: 706.39996, y: 183.2}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: The players walks in and triggers the door trap
+  children:
+  - {fileID: 3021977040059090588}
+  - {fileID: 2959247258392784603}
+  - {fileID: -4154625309774113231}
+  - {fileID: -5611276250411769394}
+  - {fileID: -1587351125806191362}
+  - {fileID: -5965706678563954228}
+--- !u!114 &-6361619324730657043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da0e464f8db6563468c73fa10bc6500a, type: 3}
+  m_Name: TalkNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 8eecb60c5180b3941a7185274b6c140c
+  position: {x: 1541.5, y: 439.5}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: Welcome, foolish traveller!
+  textLines:
+  - Welcome, foolish traveller!
+  readSpeed: 2
+  current: 0
+--- !u!114 &-6322200437515101314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da0e464f8db6563468c73fa10bc6500a, type: 3}
+  m_Name: TalkNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: e927685e7ec6409439246e8df0a83401
+  position: {x: 1541.5, y: 823.5}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: And, Ummm... You sure you wanna stand in the doorway?
+  textLines:
+  - And, Ummm... You sure you wanna stand in the doorway?
+  readSpeed: 2
+  current: 0
+--- !u!114 &-6185054686202659481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 618347b8794c40f48a26a28044e2bdf4, type: 3}
+  m_Name: SequencerNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 1b2a2f0e20e8f1c4188719fa846a2b3b
+  position: {x: 1224.5, y: 662}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: Player in the doorway
+  children:
+  - {fileID: 464785090348604189}
+  - {fileID: 6566486598959605276}
+  - {fileID: -6322200437515101314}
+--- !u!114 &-5965706678563954228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a97e2d074f934054b61257dfa9298d28, type: 3}
+  m_Name: PlaceholderNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: ed7e4381e05dc204bb9f46e0755c230c
+  position: {x: 1042.5, y: 334.5}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: 'AttackNode
+
+    Attack the player'
+  children: []
+  returnState: 2
+--- !u!114 &-5611276250411769394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da0e464f8db6563468c73fa10bc6500a, type: 3}
+  m_Name: TalkNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 9850507adc565394ea2b77a356155fad
+  position: {x: 1042.5, y: 181.5}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: Now!
+  textLines:
+  - Now!
+  readSpeed: 2
+  current: 0
+--- !u!114 &-5310899067154852157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 618347b8794c40f48a26a28044e2bdf4, type: 3}
+  m_Name: SequencerNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 2b9456e167f2fd8459d8b9b7907aaaf5
+  position: {x: 1224.5, y: 528}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: Player is Inside room
+  children:
+  - {fileID: 6823073499961418791}
+  - {fileID: -6361619324730657043}
+  - {fileID: 393025134548269370}
+--- !u!114 &-4154625309774113231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da0e464f8db6563468c73fa10bc6500a, type: 3}
+  m_Name: TalkNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 4221708329ed52041be050b55d478576
+  position: {x: 1042.5, y: 81}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: My most cunning invention - the Hidden Trap Activator Contraption!
+  textLines:
+  - My most cunning invention - the Hidden Trap Activator Contraption!
+  readSpeed: 2
+  current: 0
+--- !u!114 &-3165833294255624911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a97e2d074f934054b61257dfa9298d28, type: 3}
+  m_Name: PlaceholderNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 59b2e8be94ff21f4b811cf2284c30c2f
+  position: {x: -144.38484, y: 83.19999}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: Player enters trigger in front of doorway
+  children: []
+  returnState: 2
+--- !u!114 &-2953351230303844230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 909b11d7cddf4430a1547b0fbe82ceea, type: 3}
+  m_Name: SelectorNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: afda59242c234ee43a0b140060b8a349
+  position: {x: 963.5, y: 967.5}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: Where the hell is the player?
+  children: []
+--- !u!114 &-2893296483456393815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0507b4f9c3502641a8b1d519ba3efa4, type: 3}
+  m_Name: RootNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: eefab68bb27287546a8ae42a9dde822c
+  position: {x: 47.82249, y: 108}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: 
+  child: {fileID: -7289682351596216978}
+--- !u!114 &-1587351125806191362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da0e464f8db6563468c73fa10bc6500a, type: 3}
+  m_Name: TalkNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: a88be91ee64a32e45b1a5cf5bac600e8
+  position: {x: 1042.5, y: 258}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: Meet your demise!
+  textLines:
+  - Meet your demise!
+  readSpeed: 2
+  current: 0
+--- !u!114 &-747235124459152009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 909b11d7cddf4430a1547b0fbe82ceea, type: 3}
+  m_Name: SelectorNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: d0d3f79cc63c13541a59253d76e05fa0
+  position: {x: 706.5, y: 528}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: Where is the player?
+  children:
+  - {fileID: -5310899067154852157}
+  - {fileID: -6185054686202659481}
+  - {fileID: 4234146123481575340}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae05d0a114b9d61478ca0c18969c236e, type: 3}
+  m_Name: Bossenschmurtz_act_1
+  m_EditorClassIdentifier: 
+  rootNode: {fileID: -2893296483456393815}
+  treeState: 0
+  nodes:
+  - {fileID: -2893296483456393815}
+  - {fileID: -7289682351596216978}
+  - {fileID: 4131484121947639568}
+  - {fileID: -3165833294255624911}
+  - {fileID: 5041492449284494146}
+  - {fileID: 1224534176452775667}
+  - {fileID: 3021977040059090588}
+  - {fileID: -6492399361510074394}
+  - {fileID: 2959247258392784603}
+  - {fileID: -4154625309774113231}
+  - {fileID: -5611276250411769394}
+  - {fileID: -1587351125806191362}
+  - {fileID: -5965706678563954228}
+  - {fileID: -747235124459152009}
+  - {fileID: 6823073499961418791}
+  - {fileID: -5310899067154852157}
+  - {fileID: -6185054686202659481}
+  - {fileID: 4234146123481575340}
+  - {fileID: -2953351230303844230}
+  - {fileID: -6361619324730657043}
+  - {fileID: 393025134548269370}
+  - {fileID: 464785090348604189}
+  - {fileID: -6322200437515101314}
+  - {fileID: 6566486598959605276}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+--- !u!114 &393025134548269370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da0e464f8db6563468c73fa10bc6500a, type: 3}
+  m_Name: TalkNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: d64526383d784a948b85ac14ec58ad4c
+  position: {x: 1541.5, y: 516}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: I am the magnificent Bossenschmurtz!
+  textLines:
+  - I am the magnificent Bossenschmurtz!
+  readSpeed: 2
+  current: 0
+--- !u!114 &464785090348604189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da0e464f8db6563468c73fa10bc6500a, type: 3}
+  m_Name: TalkNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: b10d4e212085a344ba41a79f5470d8f5
+  position: {x: 1541.5, y: 662}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: Welcome, traveller!
+  textLines:
+  - Welcome, traveller!
+  readSpeed: 2
+  current: 0
+--- !u!114 &1224534176452775667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a97e2d074f934054b61257dfa9298d28, type: 3}
+  m_Name: PlaceholderNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: f04e6ff9a5bd1c844b29297dda9adde4
+  position: {x: 1284.6849, y: -95.853714}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: 'ConditionNode
+
+    PlayerSteppedOnDoorClose'
+  children: []
+  returnState: 1
+--- !u!114 &2959247258392784603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da0e464f8db6563468c73fa10bc6500a, type: 3}
+  m_Name: TalkNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 109e6e60f32c6c54dbd8f0213310e4f6
+  position: {x: 1042.5, y: -7.5}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: Ah! In your haste you have fallen for my trap!
+  textLines:
+  - Ah! In your haste you have fallen for my trap!
+  readSpeed: 2
+  current: 0
+--- !u!114 &3021977040059090588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e591301bbf91489ab119d1f797624df3, type: 3}
+  m_Name: RepeatUntilNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 4d75224abf623e047af7cf1d241d4b4f
+  position: {x: 1042.285, y: -95.853714}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: Until player steps on DoorClose
+  child: {fileID: 1224534176452775667}
+  repeatType: 1
+  times: -1
+  duration: 3
+  untilState: 2
+--- !u!114 &4131484121947639568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da0e464f8db6563468c73fa10bc6500a, type: 3}
+  m_Name: TalkNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: bfb9d0d7b6df9c04993056889126c0c7
+  position: {x: 481.60004, y: 83.2}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: Aha! I see you have finally come!
+  textLines:
+  - Aha! I see you have finally come!
+  readSpeed: 2
+  current: 0
+--- !u!114 &4234146123481575340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 618347b8794c40f48a26a28044e2bdf4, type: 3}
+  m_Name: SequencerNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 299331f35080b2542b1f976b965bf8c1
+  position: {x: 963.5, y: 823.5}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: Player outisde room
+  children: []
+--- !u!114 &5041492449284494146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 909b11d7cddf4430a1547b0fbe82ceea, type: 3}
+  m_Name: SelectorNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 21adf9fb44381ce48b7b97eea1573a68
+  position: {x: 481.60007, y: 194.4975}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: What does the player do?
+  children:
+  - {fileID: -6492399361510074394}
+  - {fileID: -747235124459152009}
+--- !u!114 &6566486598959605276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da0e464f8db6563468c73fa10bc6500a, type: 3}
+  m_Name: TalkNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: f505dc43dd5e5dc49a199b07b5b5464b
+  position: {x: 1541.5, y: 735}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: I am the magnanimous Bossenschmurtz!
+  textLines:
+  - I am the magnanimous Bossenschmurtz!
+  readSpeed: 2
+  current: 0
+--- !u!114 &6823073499961418791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a97e2d074f934054b61257dfa9298d28, type: 3}
+  m_Name: PlaceholderNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 8b05c124ba0a2cd4da9935b422cb39ea
+  position: {x: 1541.5, y: 325}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  gameObject: {fileID: 0}
+  description: 'ConditionNode
+
+    PlayerIsInsideRoom'
+  children: []
+  returnState: 1

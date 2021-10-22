@@ -1,0 +1,156 @@
+#node-border {
+    background-color: rgb(56, 56, 56);
+    border-left-color: rgb(99, 23, 0);
+    border-right-color: rgb(99, 23, 0);
+    border-top-color: rgb(99, 23, 0);
+    border-bottom-color: rgb(99, 23, 0);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+#input {
+}
+
+#output {
+    align-items: flex-end;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+#selection-border {
+    border-left-color: rgb(32, 255, 255);
+    border-right-color: rgb(32, 255, 255);
+    border-top-color: rgb(32, 255, 255);
+    border-bottom-color: rgb(32, 255, 255);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+:hover > #selection-border {
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+}
+
+:selected > #selection-border {
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+}
+
+:hover:selected > #selection-border {
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+}
+
+.node {
+    min-width: 150px;
+    min-height: 50px;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#title-divider {
+    min-height: 1px;
+    border-left-color: rgb(91, 91, 91);
+    border-right-color: rgb(91, 91, 91);
+    border-top-color: rgb(91, 91, 91);
+    border-bottom-color: rgb(91, 91, 91);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    min-width: 0;
+}
+
+.action #title-top {
+    background-color: rgb(112, 176, 108);
+    border-left-color: rgb(255, 0, 0);
+    border-right-color: rgb(255, 0, 0);
+    border-top-color: rgb(255, 0, 0);
+    border-bottom-color: rgb(255, 0, 0);
+}
+
+.decorator #title-top {
+    min-height: 10px;
+    background-color: rgb(35, 115, 224);
+    border-left-color: rgb(35, 115, 224);
+    border-right-color: rgb(35, 115, 224);
+    border-top-color: rgb(35, 115, 224);
+    border-bottom-color: rgb(35, 115, 224);
+}
+
+.root #title-top {
+    min-height: 10px;
+    background-color: rgb(32, 32, 32);
+}
+
+.composite #title-top {
+    background-color: rgb(255, 193, 97);
+    min-height: 10px;
+    border-left-color: rgb(58, 221, 57);
+    border-right-color: rgb(58, 221, 57);
+    border-top-color: rgb(58, 221, 57);
+    border-bottom-color: rgb(58, 221, 57);
+}
+
+.placeholder #title-top {
+    background-color: rgb(250, 250, 250);
+    min-height: 10px;
+    border-left-color: rgb(250, 250, 250);
+    border-right-color: rgb(250, 250, 250);
+    border-top-color: rgb(250, 250, 250);
+    border-bottom-color: rgb(250, 250, 250);
+}
+
+#node-state {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.running {
+    background-color: rgb(255, 243, 0);
+}
+
+.success {
+    background-color: rgba(17, 255, 0, 0.58);
+}
+
+.failure {
+    background-color: rgb(255, 30, 0);
+}
+
+#description {
+    white-space: normal;
+    width: 150px;
+}

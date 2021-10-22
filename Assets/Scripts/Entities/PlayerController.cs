@@ -37,26 +37,33 @@ public class PlayerController : UnitController
 
     void Update()
     {
-        // TESTING
-        TestGetInput();
-        
         switch (currentState)
         {
-            case -1: // PAUSED
-                return;
-            case 0: // IDLE
+            case States.Paused:
+                break;
+            case States.Idle:
                 newInput = GetInputDirection();
                 IdleUpdate();
                 break;
-            case 1: // MOVING
+            case States.Moving:
                 MovingUpdate();
                 break;
-            case 2: // ATTACKING
+            case States.Attacking:
                 newInput = GetInputDirection();
                 AttackingUpdate();
                 break;
-            case 3: // DISABLED
-                break;                
+            case States.Disabled:
+                break;
+            case States.Chasing:
+                break;
+            case States.Talking:
+                break;
+            case States.Searching:
+                break;
+            case States.Waiting:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
         if (attackTime > 0)
         {
@@ -343,7 +350,7 @@ public class PlayerController : UnitController
             }
             break;
         }
-        currentState = (int) newState;
+        currentState = newState;
     }
 
     // Move this to seperate input handling independant of Player entity

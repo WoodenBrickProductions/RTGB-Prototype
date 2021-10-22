@@ -11,69 +11,83 @@ public class BossEnemyController : UnitController
     
     [Header("Dialogues")]
     [SerializeField] private Dialogue[] dialogues;
-    // Start is called before the first frame update
 
-    public Action<TileObject> NotifyPlayerInTalkRangeHandler;
+    public Action<TileObject> NotifyPlayerInTalkRangeHandler; // ??
+    public BehaviourTree tree;
     
     protected PlayerController _playerController;
     protected PseudoRandomNumberGenerator pseudoRandomNumberGenerator;
         
-    protected List<Position> _possibleMoves;
+    protected List<Position> _directionalMoves;
     protected bool _stoppedMoving;
     protected Position lastPlayerPosition;
 
     private bool _playerEntered = false;
     private Action _currentAction;
     
-    private float waitTime;
+    private float waitTime; // ??
     
     protected override void Start()
     {
+        base.Start();
+        _playerController = PlayerController._;
+ 
+        // Data
         tag = "Enemy";
         name = "BossenSchmurtz";
+        
+        // Parameter initialization
         _aiStats.wanderTime = _aiStats.wanderCooldown + Random.value;
         pseudoRandomNumberGenerator = new PseudoRandomNumberGenerator(4);
         attackTime = attackCooldown;
-        base.Start();
-        _possibleMoves = new List<Position>();
-        _possibleMoves.Add(Position.Up);
-        _possibleMoves.Add(Position.Right);
-        _possibleMoves.Add(Position.Down);
-        _possibleMoves.Add(Position.Left);
-        _playerController = PlayerController._;
-        _playerController.OnPauseAll += Pause;
+        
+        
+        _directionalMoves = new List<Position>();
+        _directionalMoves.Add(Position.Up);
+        _directionalMoves.Add(Position.Right);
+        _directionalMoves.Add(Position.Down);
+        _directionalMoves.Add(Position.Left);
+        _playerController.OnPauseAll += Pause; // ??
         
         // Situation
-        NotifyPlayerInTalkRangeHandler += CommencePlayerEnteredRoom;
-        currentState = 7;
+        NotifyPlayerInTalkRangeHandler += CommencePlayerEnteredRoom; // ??
+        
+        // Behaviour Tree Initialization
+        tree = tree.Clone();
+        tree.Bind(gameObject);
     }
 
     void Update()
     {
         switch (currentState)
         {
-            case (int) States.Idle: // IDLE
+            case States.Paused:
+                break;
+            case States.Idle:
                 IdleUpdate();
                 break;
-            case 1: // MOVING
+            case States.Moving:
                 MovingUpdate();
                 break;
-            case 2: // ATTACKING
+            case States.Attacking:
                 AttackingUpdate();
                 break;
-            case 3: // DISABLED
+            case States.Disabled:
                 break;
-            case 4:
+            case States.Chasing:
                 ChasingUpdate();
                 break;
-            case (int) States.Waiting:
+            case States.Talking:
+                break;
+            case States.Searching:
+                break;
+            case States.Waiting:
                 WaitingUpdate();
                 break;
-            
-            // Added in more states, but I hope to change this whole thing to be class based instead of enum based, cause
-            // now it's proving to be a pain in the arse to keep adding cases for each state. 
+            default:
+                throw new ArgumentOutOfRangeException();
         }
-
+        
         if (attackTime > 0)
         {
             attackTime -= Time.deltaTime;
@@ -84,72 +98,10 @@ public class BossEnemyController : UnitController
             _aiStats.chasingTime -= Time.deltaTime;
         }
     }
-
-    // I am sorry for what I am about to do.
-
-    private void PlayerIsNotYetInRangeOfBeingInTheSameSituation()
-    {
-        int situationEnterRange = 10;
-        
-        if (IsPlayerInRange(situationEnterRange))
-        {
-            _currentAction = PlayerHasEnteredTheSituationButHasntGoneInside;
-        }
-    }
-
-    private void PlayerHasEnteredTheSituationButHasntGoneInside()
-    {
-        int talkToPlayerRange = 3;
-        if (IsPlayerInRange(talkToPlayerRange))
-        {
-            ChangeState(States.Waiting);
-            waitTime = 5.0f;
-            uiController.StartDialogue(this, dialogues[0]);
-            _currentAction = PlayerHasEnteredTheRoom;
-        }
-    }
-
-    private bool PlayerSteppedOnTheDoorTrigger = false;
-    public void OnPlayerSteppedOnTheDoorTrigger()
-    {
-        PlayerSteppedOnTheDoorTrigger = true;
-    }
-    private void PlayerHasEnteredTheRoom()
-    {
-        
-        if (waitTime < 0)
-        {
-            print("Player is not doing anything!");
-            Assert.IsTrue(false);
-        }
-
-        if (PlayerSteppedOnTheDoorTrigger)
-        {
-            _currentAction = PlayerHasSteppedOnTheDoorTrigger;
-        }
-    }
-
-    private void PlayerHasSteppedOnTheDoorTrigger()
-    {
-        
-    }
-    
-    public void CommenceAttackPlayer()
-    {
-        ChangeState(States.Chasing);
-        uiController.ContinueDialogue();
-    }
-
-    public void CommencePlayerOpenedDoor()
-    {
-        ChangeState(States.Talking);
-        uiController.StartDialogue(this, dialogues[1]);
-    }
-
     public void CommencePlayerEnteredRoom(TileObject sender)
     {
         ChangeState(States.Talking);
-        uiController.StartDialogue(this, dialogues[0]);
+        uiController.StartDialogue(name);
     }
 
     private void WaitingUpdate()
@@ -162,9 +114,11 @@ public class BossEnemyController : UnitController
     
     private void IdleUpdate()
     {
+        tree.Update();
+        
         if (_aiStats.wanderTime < 0 && IsPlayerInRange(10))
         {
-            
+            ChangeState(States.Waiting);
         }
     }
     /**
@@ -186,7 +140,7 @@ public class BossEnemyController : UnitController
         for(int i = 0; i < 4; i++)
         {
             TargetTile = boardController.GetTile(
-                _position + _possibleMoves[(direction + i) % 4]);
+                _position + _directionalMoves[(direction + i) % 4]);
             if (TargetTile != null && !TargetTile.IsStaticTile())
             {
                 TileObject occupiedTileObject = TargetTile.GetOccupiedTileObject();
@@ -369,9 +323,9 @@ public class BossEnemyController : UnitController
                 else
                 {
                     //Didn't find Node
-                    for(int i = 0; i < _possibleMoves.Count; i++)
+                    for(int i = 0; i < _directionalMoves.Count; i++)
                     {
-                        Tile neighborTile = boardController.GetTile(_possibleMoves[i] + current.position);
+                        Tile neighborTile = boardController.GetTile(_directionalMoves[i] + current.position);
                         if (neighborTile != null && !neighborTile.IsStaticTile() &&
                             (neighborTile.GetOccupiedTileObject() == null || neighborTile.GetOccupiedTileObject().CompareTag("Player")))
                         {
@@ -466,7 +420,7 @@ public class BossEnemyController : UnitController
                 break;
         }
 
-        currentState = (int) newState;
+        currentState = newState;
     }
 
     private class Node

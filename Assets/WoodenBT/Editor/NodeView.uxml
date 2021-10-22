@@ -1,0 +1,25 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="NodeViewStyle.uss" />
+    <ui:VisualElement name="node-state" />
+    <ui:VisualElement name="node-border">
+        <ui:VisualElement name="contents" style="flex-direction: column;">
+            <ui:VisualElement name="title-top" class="horizontal" style="min-height: 10px;" />
+            <ui:VisualElement name="title" style="align-items: center;">
+                <ui:Label name="title-label" text="RepeatNode" class="unity-text-element unity-label" style="align-items: auto; -unity-font-style: bold; font-size: 16px;" />
+                <ui:VisualElement name="title-button-container">
+                    <ui:VisualElement name="collapse-button">
+                        <ui:VisualElement name="icon" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="title-divider" class="horizontal" />
+            <ui:Label text="description" display-tooltip-when-elided="true" name="description" style="-unity-text-align: upper-center; font-size: 10px;" />
+            <ui:VisualElement name="top" style="flex-direction: row; align-items: stretch; justify-content: space-between;">
+                <ui:VisualElement name="input" style="align-items: flex-start;" />
+                <ui:VisualElement name="divider" class="horizontal" style="-unity-text-outline-width: 2px; background-color: rgb(0, 0, 0); -unity-slice-left: 0; -unity-slice-top: 0; -unity-slice-right: 0; -unity-slice-bottom: 0; align-items: center;" />
+                <ui:VisualElement name="output" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="selection-border" picking-mode="Ignore" />
+</ui:UXML>

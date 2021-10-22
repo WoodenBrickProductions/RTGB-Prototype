@@ -28,7 +28,7 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
     [Header("Debuging")]
     [SerializeField] protected float moveTime; // DEBUG-ONLY SERIALIZE
     [SerializeField] protected float attackTime; // DEBUG-ONLY SERIALIZE
-    [SerializeField] protected int currentState = 0; // DEBUG-ONLY SERIALIZE
+    [SerializeField] protected States currentState = 0; // DEBUG-ONLY SERIALIZE
     [SerializeField] protected float attackCooldown; // TODO: Change to attack speed?
 
     protected Queue<States> state;
@@ -127,7 +127,7 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
     protected virtual void ChangeState(States newState)
     {
         print("BaseStateIsCalled");
-        currentState = (int) newState;
+        currentState = newState;
     }
     
     /**
@@ -172,14 +172,14 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
 
     protected virtual void Pause(GameObject sender)
     {
-        if (currentState != -1)
+        if (currentState != States.Paused)
         {
             state.Enqueue((States) currentState);
             ChangeState(States.Paused);
         }
         else
         {
-            currentState = (int) state.Dequeue();
+            currentState = state.Dequeue();
         }
     }
 

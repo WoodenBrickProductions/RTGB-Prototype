@@ -87,17 +87,30 @@ public class UIController : MonoBehaviour
         }
     }
 
-    public void StartDialogue(TileObject tileObject, Dialogue dialogue)
+    public void ShowDialogue(string text)
+    {
+        _dialogueBox.SetDialogueText(text);        
+    }
+
+    public void ShowDialogue(string text, int textSize)
+    {
+        ShowDialogue(text);
+        _dialogueBox.SetTextSize(textSize);
+    }
+    
+    public void StartDialogue(string name)
     {
         // I should switch to a thing where I send over the whole dialogue and then it does it's own thing until it reaches an interrupt, then it stops until ContinueDialogue 
         // is called, where I can pass a new callback function.
-        _dialogueBox.SetName(tileObject.name);
-        _currentDialogue = dialogue;
-        _currentLine = 0;
-        _continueDialogue = true;
+        _dialogueBox.SetName(name);
         _dialogueBox.gameObject.SetActive(true);
     }
 
+    public void StopDialogue()
+    {
+        _dialogueBox.gameObject.SetActive(false);
+    }
+    
     public void ContinueDialogue()
     {
         _continueDialogue = true;

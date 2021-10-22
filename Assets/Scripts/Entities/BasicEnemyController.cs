@@ -39,20 +39,30 @@ public class BasicEnemyController : UnitController
     {
         switch (currentState)
         {
-            case 0: // IDLE
+            case States.Paused:
+                break;
+            case States.Idle:
                 IdleUpdate();
                 break;
-            case 1: // MOVING
+            case States.Moving:
                 MovingUpdate();
                 break;
-            case 2: // ATTACKING
+            case States.Attacking:
                 AttackingUpdate();
                 break;
-            case 3: // DISABLED
+            case States.Disabled:
                 break;
-            case 4:
+            case States.Chasing:
                 ChasingUpdate();
                 break;
+            case States.Talking:
+                break;
+            case States.Searching:
+                break;
+            case States.Waiting:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
 
         if (attackTime > 0)
@@ -65,7 +75,7 @@ public class BasicEnemyController : UnitController
             _aiStats.chasingTime -= Time.deltaTime;
         }
     }
-
+    
     private void IdleUpdate()
     {
         if (!_aiStats.chasing && _aiStats.wanderTime <= 0)
@@ -396,7 +406,7 @@ public class BasicEnemyController : UnitController
                 break;
         }
 
-        currentState = (int) newState;
+        currentState = newState;
     }
     
     private class Node

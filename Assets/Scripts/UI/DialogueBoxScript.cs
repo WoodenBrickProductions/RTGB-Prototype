@@ -40,6 +40,11 @@ public class DialogueBoxScript : MonoBehaviour
     {
         dialogue.text = dialogueText;
     }
+
+    public void SetTextSize(int size)
+    {
+        dialogue.fontSize = size;
+    }
     
     /*
      * How do I proceed the dialogue?
