@@ -13,6 +13,11 @@ public class SelectorNode : CompositeNode
 
     protected override State OnUpdate()
     {
+        if (children.Count == 0)
+        {
+            return State.Failure;
+        }
+        
         var child = children[current];
         switch (child.Update())
         {

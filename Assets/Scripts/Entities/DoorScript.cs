@@ -34,7 +34,10 @@ public class DoorScript : MonoBehaviour
         { 
             trigger.areaTrigger.NotifyEntityEnteredHandler += DoorFunction(trigger.doorFunction);
         }
-        _doorTile = _doorObject.GetOccupiedTile();
+
+        _doorTile = BoardController._boardController.GetTile(new Position((int) _doorObject.transform.position.x,
+            (int) _doorObject.transform.position.z));
+
         if (opened)
         {
             OpenDoor(null);
@@ -74,8 +77,11 @@ public class DoorScript : MonoBehaviour
     
     private void OpenDoor(TileObject sender)
     {
-        _doorObject.GetOccupiedTile().ClearTileObject();
-        _doorObject.ClearOccupiedTile();
+        if (_doorObject.GetOccupiedTile() != null)
+        {
+            _doorObject.GetOccupiedTile().ClearTileObject();
+            _doorObject.ClearOccupiedTile();
+        }
         _doorObject.gameObject.SetActive(false);
         opened = true;
     }
@@ -83,6 +89,10 @@ public class DoorScript : MonoBehaviour
     private void CloseDoor(TileObject sender)
     {
         print("Closing door");
+        if (_doorTile == null)
+        {
+            // Door wasn't active on init, so we don't have which tile it belongs to.
+        }
         
         if (_doorTile.SetTileObject(_doorObject))
         {
@@ -98,6 +108,10 @@ public class DoorScript : MonoBehaviour
 
     private void OnValidate()
     {
+        if (_doorObject == null)
+        {
+            _doorObject = transform.GetChild(0).GetComponent<TileObject>();
+        }
         foreach(var trigger in doorTriggers)
         {
             if (trigger.areaTrigger == null)
@@ -118,6 +132,7 @@ public class DoorScript : MonoBehaviour
         }
         else
         {
+            _doorObject.gameObject.SetActive(!opened);
         }
     }
 }

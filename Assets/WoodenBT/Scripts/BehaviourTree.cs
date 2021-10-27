@@ -152,10 +152,18 @@ public class BehaviourTree : ScriptableObject
 
     public void Bind(GameObject gameObject)
     {
+        TileObject tileObject = gameObject.GetComponent<TileObject>();
         Traverse(rootNode, node =>
         {
             node.gameObject = gameObject;
             node.blackboard = blackboard;
+            node.tileObject = tileObject;
         });
+    }
+
+    public void Bind(GameObject gameObject, Blackboard blackboard)
+    {
+        this.blackboard = blackboard;
+        Bind(gameObject);
     }
 }

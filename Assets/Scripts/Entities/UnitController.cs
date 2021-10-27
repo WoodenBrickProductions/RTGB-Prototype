@@ -15,7 +15,8 @@ public enum States
     Chasing = 4,
     Talking = 5,
     Searching = 6, // Looking for target
-    Waiting = 7 // Waiting for certain condition to be met, then will take action or change state
+    Waiting = 7, // Waiting for certain condition to be met, then will take action or change state
+    Acting = 8
 }
 
 public class UnitController : TileObject, IAttackable, IDealsDamage
@@ -186,6 +187,11 @@ public class UnitController : TileObject, IAttackable, IDealsDamage
     private void SubscribeToEvents()
     {
         
+    }
+
+    public bool IsObjectWithinRange(TileObject target, float range)
+    {
+        return range < Position.Distance(_position, target.GetOccupiedTile().GetGridPosition());
     }
 }
 

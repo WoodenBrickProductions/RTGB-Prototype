@@ -8,13 +8,14 @@ using Random = UnityEngine.Random;
 public class BossEnemyController : UnitController
 {
     [SerializeField] private AIStats _aiStats;
-    
-    [Header("Dialogues")]
-    [SerializeField] private Dialogue[] dialogues;
 
-    public Action<TileObject> NotifyPlayerInTalkRangeHandler; // ??
     public BehaviourTree tree;
+    public Blackboard blackboard;
     
+
+
+    
+    // ----------------------------------------------------------
     protected PlayerController _playerController;
     protected PseudoRandomNumberGenerator pseudoRandomNumberGenerator;
         
@@ -31,7 +32,7 @@ public class BossEnemyController : UnitController
     {
         base.Start();
         _playerController = PlayerController._;
- 
+    
         // Data
         tag = "Enemy";
         name = "BossenSchmurtz";
@@ -40,7 +41,7 @@ public class BossEnemyController : UnitController
         _aiStats.wanderTime = _aiStats.wanderCooldown + Random.value;
         pseudoRandomNumberGenerator = new PseudoRandomNumberGenerator(4);
         attackTime = attackCooldown;
-        
+        blackboard = new Blackboard();    
         
         _directionalMoves = new List<Position>();
         _directionalMoves.Add(Position.Up);
@@ -49,14 +50,70 @@ public class BossEnemyController : UnitController
         _directionalMoves.Add(Position.Left);
         _playerController.OnPauseAll += Pause; // ??
         
-        // Situation
-        NotifyPlayerInTalkRangeHandler += CommencePlayerEnteredRoom; // ??
-        
         // Behaviour Tree Initialization
         tree = tree.Clone();
-        tree.Bind(gameObject);
+        tree.Bind(gameObject, blackboard);
+        
+        SetupActOne();
     }
 
+    // -------------------------------------------------------------
+    // Act 1
+    // -------------------------------------------------------------
+    
+    [Header("Act 1")]
+    public AreaTrigger roomEnterTrigger;
+    public AreaTrigger doorwayTrigger;
+    public AreaTrigger doorOpenTrigger;
+    public AreaTrigger doorCloseTrigger1;
+    public AreaTrigger doorCloseTrigger2;
+    
+    
+    private void SetupActOne()
+    {
+        blackboard.conditions.Add("PlayerSteppedOnDoorClose", false);
+        blackboard.conditions.Add("PlayerEnteredRoom", false);
+        blackboard.conditions.Add("PlayerEnteredDoorway", false);
+        
+        doorwayTrigger.NotifyEntityEnteredHandler += OnPlayerEnteredDoorway;
+        roomEnterTrigger.NotifyEntityEnteredHandler += OnPlayerEnteredRoom;
+        doorOpenTrigger.NotifyEntityEnteredHandler += OnPlayerSteppedOnDoorOpen;
+        doorCloseTrigger1.NotifyEntityEnteredHandler += OnPlayerSteppedOnDoorClose;
+        doorCloseTrigger2.NotifyEntityEnteredHandler += OnPlayerSteppedOnDoorClose;
+    }
+
+    private void OnPlayerSteppedOnDoorOpen(TileObject obj)
+    {
+        blackboard.conditions["PlayerSteppedOnDoorOpen"] = true;
+    }
+
+    private void OnPlayerEnteredRoom(TileObject obj)
+    {
+        blackboard.conditions["PlayerEnteredRoom"] = true;
+    }
+
+    private void OnPlayerEnteredDoorway(TileObject obj)
+    {
+        blackboard.conditions["PlayerEnteredDoorway"] = true;
+    }
+
+    void OnPlayerSteppedOnDoorClose(TileObject tileObject)
+    {
+        blackboard.conditions["PlayerSteppedOnDoorClose"] = true;
+    }
+    
+    // -------------------------------------------------------------
+    // Act 2
+    // -------------------------------------------------------------
+
+    [Header("Act 2")] 
+    private AreaTrigger trigger;
+    
+    private void SetupActTwo()
+    {
+        
+    }
+    
     void Update()
     {
         switch (currentState)
@@ -84,6 +141,9 @@ public class BossEnemyController : UnitController
             case States.Waiting:
                 WaitingUpdate();
                 break;
+            case States.Acting:
+                ActingUpdate();
+                break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -108,19 +168,24 @@ public class BossEnemyController : UnitController
     {
         if (IsPlayerInRange(_aiStats.talkRange))
         {
-            NotifyPlayerInTalkRangeHandler?.Invoke(this);
+            // NotifyPlayerInTalkRangeHandler?.Invoke(this);
         }
     }
     
     private void IdleUpdate()
     {
-        tree.Update();
-        
-        if (_aiStats.wanderTime < 0 && IsPlayerInRange(10))
+        if (IsPlayerInRange(15))
         {
-            ChangeState(States.Waiting);
+            ChangeState(States.Acting);
         }
     }
+
+    private void ActingUpdate()
+    {
+        tree.Update();
+    }
+    
+    
     /**
      * Set next possible tile to wander to, set's TargetTile
      */
@@ -382,10 +447,11 @@ public class BossEnemyController : UnitController
     
     protected override void ChangeState(States newState)
     {
-        switch ((int) newState)
+        switch (currentState)
         {
-            case 0: // IDLE
-            {
+            case States.Paused:
+                break;
+            case States.Idle:
                 IndicatorController.ClearIndicator();
                 if (_playerController.GetUnitStatus().CanBeAttacked() && IsPlayerInRange(_aiStats.agroRange))
                 {
@@ -393,32 +459,33 @@ public class BossEnemyController : UnitController
                     return;
                 }
                 break;
-            }
-            case 1: // MOVING
-            {
+            case States.Moving:
                 IndicatorController.SetIndicator(GetInputDirection(), IndicatorState.Moving);
                 moveTime = 1.0f / movementSpeed;
                 _stoppedMoving = false;
-            }
                 break;
-            case 2: // ATTACKING
-            {
+            case States.Attacking:
                 IndicatorController.SetIndicator(GetInputDirection(), IndicatorState.Attacking);
                 attackTime = attackCooldown;
-            }
                 break;
-            case 3: // DISABLED
-            {
-                
-            }
+            case States.Disabled:
                 break;
-            case 4: // CHASING
-            {
+            case States.Chasing:
                 IndicatorController.ClearIndicator();
                 _aiStats.chasing = true;
-            }
                 break;
+            case States.Talking:
+                break;
+            case States.Searching:
+                break;
+            case States.Waiting:
+                break;
+            case States.Acting:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
+            
 
         currentState = newState;
     }

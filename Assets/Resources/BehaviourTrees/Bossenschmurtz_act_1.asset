@@ -16,14 +16,13 @@ MonoBehaviour:
   started: 0
   guid: 9a50d1c8853d1e1448eccb8535f4803b
   position: {x: 260.99503, y: 108}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
   gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
   description: 
   children:
   - {fileID: 4131484121947639568}
   - {fileID: 5041492449284494146}
+  current: 0
 --- !u!114 &-6492399361510074394
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39,19 +38,18 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 793e4df4ad4c89946a9bf60de4cf2802
-  position: {x: 706.39996, y: 183.2}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
+  position: {x: 1186.6426, y: -113.600006}
   gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
   description: The players walks in and triggers the door trap
   children:
-  - {fileID: 3021977040059090588}
+  - {fileID: -4853546559045557117}
   - {fileID: 2959247258392784603}
   - {fileID: -4154625309774113231}
   - {fileID: -5611276250411769394}
   - {fileID: -1587351125806191362}
   - {fileID: -5965706678563954228}
+  current: 0
 --- !u!114 &-6361619324730657043
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67,11 +65,9 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 8eecb60c5180b3941a7185274b6c140c
-  position: {x: 1541.5, y: 439.5}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
+  position: {x: 1509.5997, y: 125.50151}
   gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
   description: Welcome, foolish traveller!
   textLines:
   - Welcome, foolish traveller!
@@ -92,41 +88,14 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: e927685e7ec6409439246e8df0a83401
-  position: {x: 1541.5, y: 823.5}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
+  position: {x: 1510.4, y: 619.1999}
   gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
   description: And, Ummm... You sure you wanna stand in the doorway?
   textLines:
   - And, Ummm... You sure you wanna stand in the doorway?
   readSpeed: 2
   current: 0
---- !u!114 &-6185054686202659481
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 618347b8794c40f48a26a28044e2bdf4, type: 3}
-  m_Name: SequencerNode
-  m_EditorClassIdentifier: 
-  state: 0
-  started: 0
-  guid: 1b2a2f0e20e8f1c4188719fa846a2b3b
-  position: {x: 1224.5, y: 662}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
-  gameObject: {fileID: 0}
-  description: Player in the doorway
-  children:
-  - {fileID: 464785090348604189}
-  - {fileID: 6566486598959605276}
-  - {fileID: -6322200437515101314}
 --- !u!114 &-5965706678563954228
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,11 +111,9 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: ed7e4381e05dc204bb9f46e0755c230c
-  position: {x: 1042.5, y: 334.5}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
+  position: {x: 1510.3999, y: -113.69849}
   gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
   description: 'AttackNode
 
     Attack the player'
@@ -167,11 +134,9 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 9850507adc565394ea2b77a356155fad
-  position: {x: 1042.5, y: 181.5}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
+  position: {x: 1510.3999, y: -266.49844}
   gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
   description: Now!
   textLines:
   - Now!
@@ -192,16 +157,62 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 2b9456e167f2fd8459d8b9b7907aaaf5
-  position: {x: 1224.5, y: 528}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
+  position: {x: 1193.6002, y: 103.19996}
   gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
   description: Player is Inside room
   children:
-  - {fileID: 6823073499961418791}
+  - {fileID: 4069029944081585844}
   - {fileID: -6361619324730657043}
   - {fileID: 393025134548269370}
+  - {fileID: 1948259702985532535}
+  current: 0
+--- !u!114 &-5208750405040181460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 909b11d7cddf4430a1547b0fbe82ceea, type: 3}
+  m_Name: SelectorNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 68b4b7af1399f664791ab8fae7d4fc6d
+  position: {x: 964.5376, y: 19.2}
+  gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
+  description: 
+  children:
+  - {fileID: -6492399361510074394}
+  - {fileID: -5310899067154852157}
+--- !u!114 &-4853546559045557117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39aa00469e254956bc0a90d3360702b2, type: 3}
+  m_Name: ConditionNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: ff04fde35bde345418a162d9c499d0bb
+  position: {x: 1510.3999, y: -532.0985}
+  gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
+  description: PlayerSteppedOnDoorClose
+  conditionName: PlayerSteppedOnDoorClose
+  operationType: 0
+  valueType: 0
+  conditionValue: 1
+  floatValue: 0
 --- !u!114 &-4154625309774113231
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,16 +228,38 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 4221708329ed52041be050b55d478576
-  position: {x: 1042.5, y: 81}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
+  position: {x: 1510.3999, y: -367.29846}
   gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
   description: My most cunning invention - the Hidden Trap Activator Contraption!
   textLines:
   - My most cunning invention - the Hidden Trap Activator Contraption!
   readSpeed: 2
   current: 0
+--- !u!114 &-3393366359841449676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e591301bbf91489ab119d1f797624df3, type: 3}
+  m_Name: RepeatUntilNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 9fe30aa9dbedd444ea20b34733aa934e
+  position: {x: 777.60016, y: 19.199944}
+  gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
+  description: 
+  child: {fileID: -5208750405040181460}
+  repeatType: 1
+  times: -1
+  duration: 3
+  untilState: 2
 --- !u!114 &-3165833294255624911
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -243,10 +276,8 @@ MonoBehaviour:
   started: 0
   guid: 59b2e8be94ff21f4b811cf2284c30c2f
   position: {x: -144.38484, y: 83.19999}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
   gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
   description: Player enters trigger in front of doorway
   children: []
   returnState: 2
@@ -265,11 +296,9 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: afda59242c234ee43a0b140060b8a349
-  position: {x: 963.5, y: 967.5}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
+  position: {x: 1193.6001, y: 864}
   gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
   description: Where the hell is the player?
   children: []
 --- !u!114 &-2893296483456393815
@@ -288,10 +317,8 @@ MonoBehaviour:
   started: 0
   guid: eefab68bb27287546a8ae42a9dde822c
   position: {x: 47.82249, y: 108}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
   gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
   description: 
   child: {fileID: -7289682351596216978}
 --- !u!114 &-1587351125806191362
@@ -309,16 +336,38 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: a88be91ee64a32e45b1a5cf5bac600e8
-  position: {x: 1042.5, y: 258}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
+  position: {x: 1510.3999, y: -189.69849}
   gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
   description: Meet your demise!
   textLines:
   - Meet your demise!
   readSpeed: 2
   current: 0
+--- !u!114 &-827320914390112517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39aa00469e254956bc0a90d3360702b2, type: 3}
+  m_Name: ConditionNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 9e4123114a33b434f9ae2aa9fc46c420
+  position: {x: 1510.4, y: 381.5999}
+  gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
+  description: PlayerEnteredDoorway
+  conditionName: PlayerEnteredDoorway
+  operationType: 0
+  valueType: 0
+  conditionValue: 1
+  floatValue: 0
 --- !u!114 &-747235124459152009
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -334,16 +383,14 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: d0d3f79cc63c13541a59253d76e05fa0
-  position: {x: 706.5, y: 528}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
+  position: {x: 777.60016, y: 419.99994}
   gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
   description: Where is the player?
   children:
-  - {fileID: -5310899067154852157}
-  - {fileID: -6185054686202659481}
+  - {fileID: 4281491955359403127}
   - {fileID: 4234146123481575340}
+  - {fileID: -2953351230303844230}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -364,8 +411,6 @@ MonoBehaviour:
   - {fileID: 4131484121947639568}
   - {fileID: -3165833294255624911}
   - {fileID: 5041492449284494146}
-  - {fileID: 1224534176452775667}
-  - {fileID: 3021977040059090588}
   - {fileID: -6492399361510074394}
   - {fileID: 2959247258392784603}
   - {fileID: -4154625309774113231}
@@ -373,9 +418,7 @@ MonoBehaviour:
   - {fileID: -1587351125806191362}
   - {fileID: -5965706678563954228}
   - {fileID: -747235124459152009}
-  - {fileID: 6823073499961418791}
   - {fileID: -5310899067154852157}
-  - {fileID: -6185054686202659481}
   - {fileID: 4234146123481575340}
   - {fileID: -2953351230303844230}
   - {fileID: -6361619324730657043}
@@ -383,9 +426,13 @@ MonoBehaviour:
   - {fileID: 464785090348604189}
   - {fileID: -6322200437515101314}
   - {fileID: 6566486598959605276}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
+  - {fileID: -4853546559045557117}
+  - {fileID: 4069029944081585844}
+  - {fileID: -827320914390112517}
+  - {fileID: 4281491955359403127}
+  - {fileID: -3393366359841449676}
+  - {fileID: -5208750405040181460}
+  - {fileID: 1948259702985532535}
 --- !u!114 &393025134548269370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -401,11 +448,9 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: d64526383d784a948b85ac14ec58ad4c
-  position: {x: 1541.5, y: 516}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
+  position: {x: 1509.5997, y: 202.30156}
   gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
   description: I am the magnificent Bossenschmurtz!
   textLines:
   - I am the magnificent Bossenschmurtz!
@@ -426,17 +471,15 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: b10d4e212085a344ba41a79f5470d8f5
-  position: {x: 1541.5, y: 662}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
+  position: {x: 1510.4, y: 458.39984}
   gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
   description: Welcome, traveller!
   textLines:
   - Welcome, traveller!
   readSpeed: 2
   current: 0
---- !u!114 &1224534176452775667
+--- !u!114 &1948259702985532535
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -450,17 +493,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   state: 0
   started: 0
-  guid: f04e6ff9a5bd1c844b29297dda9adde4
-  position: {x: 1284.6849, y: -95.853714}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
+  guid: 35e944ec790cf39408d7ccb0cd241ccf
+  position: {x: 1510.5, y: 291}
   gameObject: {fileID: 0}
-  description: 'ConditionNode
-
-    PlayerSteppedOnDoorClose'
+  tileObject: {fileID: 0}
+  description: BranchOff
   children: []
-  returnState: 1
+  returnState: 2
 --- !u!114 &2959247258392784603
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -476,17 +515,15 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 109e6e60f32c6c54dbd8f0213310e4f6
-  position: {x: 1042.5, y: -7.5}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
+  position: {x: 1510.3999, y: -455.29846}
   gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
   description: Ah! In your haste you have fallen for my trap!
   textLines:
   - Ah! In your haste you have fallen for my trap!
   readSpeed: 2
   current: 0
---- !u!114 &3021977040059090588
+--- !u!114 &4069029944081585844
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -495,23 +532,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e591301bbf91489ab119d1f797624df3, type: 3}
-  m_Name: RepeatUntilNode
+  m_Script: {fileID: 11500000, guid: 39aa00469e254956bc0a90d3360702b2, type: 3}
+  m_Name: ConditionNode
   m_EditorClassIdentifier: 
   state: 0
   started: 0
-  guid: 4d75224abf623e047af7cf1d241d4b4f
-  position: {x: 1042.285, y: -95.853714}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
+  guid: 35e4ad99633174c40b2cdea29eb3e4f2
+  position: {x: 1509.5997, y: 48.701546}
   gameObject: {fileID: 0}
-  description: Until player steps on DoorClose
-  child: {fileID: 1224534176452775667}
-  repeatType: 1
-  times: -1
-  duration: 3
-  untilState: 2
+  tileObject: {fileID: 0}
+  description: PlayerEnteredRoom
+  conditionName: PlayerEnteredRoom
+  operationType: 0
+  valueType: 0
+  conditionValue: 1
+  floatValue: 0
 --- !u!114 &4131484121947639568
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -528,10 +563,8 @@ MonoBehaviour:
   started: 0
   guid: bfb9d0d7b6df9c04993056889126c0c7
   position: {x: 481.60004, y: 83.2}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
   gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
   description: Aha! I see you have finally come!
   textLines:
   - Aha! I see you have finally come!
@@ -552,13 +585,37 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 299331f35080b2542b1f976b965bf8c1
-  position: {x: 963.5, y: 823.5}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
+  position: {x: 1193.6001, y: 720}
   gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
   description: Player outisde room
   children: []
+  current: 0
+--- !u!114 &4281491955359403127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 618347b8794c40f48a26a28044e2bdf4, type: 3}
+  m_Name: SequencerNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 3c1614fd9037ad447b19da5c53039983
+  position: {x: 1193.6, y: 426.3999}
+  gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
+  description: PlayerInTheDoorway
+  children:
+  - {fileID: -827320914390112517}
+  - {fileID: 464785090348604189}
+  - {fileID: 6566486598959605276}
+  - {fileID: -6322200437515101314}
+  current: 0
 --- !u!114 &5041492449284494146
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -574,14 +631,12 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 21adf9fb44381ce48b7b97eea1573a68
-  position: {x: 481.60007, y: 194.4975}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
+  position: {x: 481.5999, y: 193.59993}
   gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
   description: What does the player do?
   children:
-  - {fileID: -6492399361510074394}
+  - {fileID: -3393366359841449676}
   - {fileID: -747235124459152009}
 --- !u!114 &6566486598959605276
 MonoBehaviour:
@@ -598,38 +653,11 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: f505dc43dd5e5dc49a199b07b5b5464b
-  position: {x: 1541.5, y: 735}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
+  position: {x: 1510.4, y: 531.1999}
   gameObject: {fileID: 0}
+  tileObject: {fileID: 0}
   description: I am the magnanimous Bossenschmurtz!
   textLines:
   - I am the magnanimous Bossenschmurtz!
   readSpeed: 2
   current: 0
---- !u!114 &6823073499961418791
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a97e2d074f934054b61257dfa9298d28, type: 3}
-  m_Name: PlaceholderNode
-  m_EditorClassIdentifier: 
-  state: 0
-  started: 0
-  guid: 8b05c124ba0a2cd4da9935b422cb39ea
-  position: {x: 1541.5, y: 325}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
-  gameObject: {fileID: 0}
-  description: 'ConditionNode
-
-    PlayerIsInsideRoom'
-  children: []
-  returnState: 1

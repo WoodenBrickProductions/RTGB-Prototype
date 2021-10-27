@@ -17,6 +17,7 @@ public abstract class Node : ScriptableObject
     [HideInInspector] public Vector2 position;
     [HideInInspector] public Blackboard blackboard;
     [HideInInspector] public GameObject gameObject; // TODO: Switch to custom gameObject
+    [HideInInspector] public TileObject tileObject;
     [TextArea] public string description;
     
     
