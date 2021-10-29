@@ -58,7 +58,12 @@ public class RepeatUntilNode : DecoratorNode
             }
             else
             {
-                return State.Failure;
+                if (newState == State.Running)
+                {
+                    return State.Running;
+                }
+                
+                return newState == untilState ? State.Success : State.Failure;
             }
         }
     }

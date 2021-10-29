@@ -74,6 +74,7 @@ public class BossEnemyController : UnitController
         blackboard.conditions.Add("PlayerSteppedOnDoorClose", false);
         blackboard.conditions.Add("PlayerEnteredRoom", false);
         blackboard.conditions.Add("PlayerEnteredDoorway", false);
+        blackboard.objects.Add("Player", _playerController);       
         
         doorwayTrigger.NotifyEntityEnteredHandler += OnPlayerEnteredDoorway;
         roomEnterTrigger.NotifyEntityEnteredHandler += OnPlayerEnteredRoom;

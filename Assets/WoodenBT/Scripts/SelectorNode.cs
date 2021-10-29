@@ -17,19 +17,24 @@ public class SelectorNode : CompositeNode
         {
             return State.Failure;
         }
-        
-        var child = children[current];
-        switch (child.Update())
+
+        while (current < children.Count)
         {
-            case State.Running:
-                return State.Running;
-            case State.Failure:
-                current++;
-                break;
-            case State.Success:
-                return State.Success;
+            var child = children[current];
+            switch (child.Update())
+            {
+                case State.Running:
+                    current = 0;
+                    return State.Running;
+                case State.Failure:
+                    current++;
+                    break;
+                case State.Success:
+                    return State.Success;
+            }
         }
 
-        return current == children.Count ? State.Failure : State.Running;
+        // return current == children.Count ? State.Failure : State.Running;
+        return State.Failure;
     }
 }

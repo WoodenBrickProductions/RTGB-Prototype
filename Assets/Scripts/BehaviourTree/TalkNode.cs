@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -46,5 +47,13 @@ public class TalkNode : ActionNode
         }
 
         return State.Running;
+    }
+
+    private void OnValidate()
+    {
+        if (textLines.Length != 0)
+        {
+            textLines[0] = description;
+        }
     }
 }

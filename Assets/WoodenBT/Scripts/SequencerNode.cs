@@ -20,19 +20,22 @@ public class SequencerNode : CompositeNode
         {
             return State.Failure;
         }
-        
-        var child = children[current];
-        switch (child.Update())
+
+        while (current < children.Count)
         {
-            case State.Running:
-                return State.Running;
-            case State.Failure:
-                return State.Failure;
-            case State.Success:
-                current++;
-                break;
+            var child = children[current];
+            switch (child.Update())
+            {
+                case State.Running:
+                    return State.Running;
+                case State.Failure:
+                    return State.Failure;
+                case State.Success:
+                    current++;
+                    break;
+            }
         }
 
-        return current == children.Count ? State.Success : State.Running;
+        return current == children.Count ? State.Success : State.Failure;
     }
 }
